@@ -1,8 +1,6 @@
-# CRYPTCADA Discord Bot
-
 ![CRYPTCADA Logo](https://i.imgur.com/Xb92Qi7.png)
 
-Welcome to the CRYPTCADA Discord Bot, created by GAZE | UzerZero! CRYPTCADA is a multifunctional bot designed to provide various services, from fetching memes and jokes to interacting with OpenAI's ChatGPT for coding advice.
+Welcome to the CRYPTCADA Discord Bot, created by GAZE aka UzerZero! CRYPTCADA is a multifunctional bot designed to provide various services, from fetching memes and jokes to interacting with OpenAI's ChatGPT for coding advice.
 
 ## Table of Contents
 
