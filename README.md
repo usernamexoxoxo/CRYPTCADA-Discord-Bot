@@ -9,7 +9,6 @@ Welcome to the CRYPTCADA Discord Bot, created by GAZE | UzerZero! CRYPTCADA is a
 - [Features](#features)
 - [Setup](#setup)
 - [Commands](#commands)
-- [Examples](#examples)
 - [Support](#support)
 - [Contributing](#contributing)
 
@@ -36,20 +35,6 @@ To set up the CRYPTCADA channels and log category, use the `%setup` command. Mak
 - `%lincom <command_name>`: Get a Linux command explanation from ChatGPT.
 - `%setup`: Set up the CRYPTCADA log channel. (Admin permissions required)
 - `%help`: Show available commands.
-
-## Examples
-
-### Asking ChatGPT a Question
-
-`%question What is the meaning of life?`
-
-### Fetching a Random Meme
-
-`%meme`
-
-### Translating Text to Binary
-
-`%translate Hello, CRYPTCADA!` 
 
 ## Support
 
