@@ -297,7 +297,7 @@ async def provide_text_translation_options(ctx, text):
     # Create an embed with translation options
     embed = discord.Embed(title="Translation Options", color=discord.Color.red())
     embed.add_field(name="Text", value=text, inline=False)
-    embed.add_field(name="Choose an option:", value="🇧 Binary\n🇭 Hexadecimal\n🧊 Chill++", inline=False)
+    embed.add_field(name="Choose an option:", value=" 🇧 Binary \n 🇭 Hexadecimal \n 🧊 Chill++ ", inline=False)
 
     # Send the embed message
     message = await ctx.send(embed=embed)
@@ -320,16 +320,16 @@ async def provide_text_translation_options(ctx, text):
     if reaction.emoji == "🇧":
         # Translate text to binary
         binary_text = ' '.join(format(ord(char), '08b') for char in text)
-        await send_embed_message(ctx, f"Binary: {binary_text}", discord.Color.red())
+        await send_embed_message(ctx, f"Binary: ```{binary_text}```", discord.Color.red())
     elif reaction.emoji == "🇭":
         # Translate text to hexadecimal
         hex_text = ''.join(hex(ord(char))[2:] for char in text)
-        await send_embed_message(ctx, f"Hexadecimal: {hex_text}", discord.Color.red())
+        await send_embed_message(ctx, f"Hexadecimal: ```{hex_text}```", discord.Color.red())
     elif reaction.emoji == "🧊":
         # Translate to "chill++" by converting to binary and then to "ice_cube" and "droplet"
         binary_text = ' '.join(format(ord(char), '08b') for char in text)
         chill_text = binary_text.replace('0', '🧊').replace('1', '💧')
-        await send_embed_message(ctx, f"Chill++: {chill_text}", discord.Color.red())
+        await send_embed_message(ctx, f"Chill++: ```{chill_text}```", discord.Color.red())
 
 @bot.command(name='translate', description="Translate between different ciphers and encodings.")
 async def translate(ctx, *, input_text):
@@ -360,14 +360,14 @@ async def translate(ctx, *, input_text):
         input_text = input_text.replace(' ', '')
         try:
             text = ''.join(chr(int(input_text[i:i+8], 2)) for i in range(0, len(input_text), 8))
-            await send_embed_message(ctx, f"Text: {text}", discord.Color.red())
+            await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
         except ValueError:
             await send_embed_message(ctx, "Invalid binary input.", discord.Color.red())
     elif input_type == 'hexadecimal':
         # Translate hexadecimal to text
         try:
             text = binascii.unhexlify(input_text.replace(" ", "")).decode('utf-8')
-            await send_embed_message(ctx, f"Text: {text}", discord.Color.red())
+            await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
         except (binascii.Error, UnicodeDecodeError):
             await send_embed_message(ctx, "Invalid hexadecimal input.", discord.Color.red())
     elif input_type == 'chill++':
@@ -376,7 +376,7 @@ async def translate(ctx, *, input_text):
         input_text = input_text.replace(' ', '')
         try:
             text = ''.join(chr(int(input_text[i:i+8], 2)) for i in range(0, len(input_text), 8))
-            await send_embed_message(ctx, f"Text: {text}", discord.Color.red())
+            await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
         except ValueError:
             await send_embed_message(ctx, "Invalid chill++ input.", discord.Color.red())
     else:
