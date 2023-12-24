@@ -24,6 +24,7 @@ import datetime
 import subprocess
 import requests
 import base64
+from wordfilter import wordfilter
 from urllib.parse import urlparse, unquote
 from config import DISCORD_BOT_TOKEN, REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT, OPENAI_API_KEY, VIRUSTOTAL_API_KEY
 
@@ -58,6 +59,9 @@ async def send_embed_message(ctx, content, color):
 # Unregister the default 'help' command
 bot.remove_command('help')
 
+# Set wordlist
+wordfilter = ['nigger', 'chink', 'nigga', 'nigguh', 'niggar', 'dyke', 'faggot', 'fag', 'kike', 'spic']
+
 # List of meme subreddits
 meme_subreddits = ['memes', 'dankmemes', 'wholesomememes', 'ProgrammerHumor']
 
@@ -76,6 +80,43 @@ async def on_message(message):
     await bot.process_commands(message)  # Make sure to call this to process commands
 
     vt_url = None # Initialize vt_url variable
+
+    # Delete messages that include bad words from a wordlist
+    try:
+        # Check if any of the words are in the wordlist
+        if any(word in message.content.lower().split(' ') for word in wordfilter):
+            stored_message = message.content # Store the message right away.
+            await message.delete() # Delete the message in question.
+            try:
+                # Set audit and warn reasons
+                audit_reason = f'Posted a message that was flagged as harmful or offensive by the CRYPTCADA bot, the message has been deleted.'
+                warn_reason = f'You posted a message that was flagged as harmful or offensive by the CRYPTCADA bot and it has been deleted, please refrain from posting malicious links in the server. \n \n *If you think this was a mistake, please open a ticket.*'
+
+                # After deleting the message, send a message to the channel to let people know of the event.
+                deleted_embed = discord.Embed(description=f'{message.author.mention} posted a message that was flagged as harmful or offensive, the message has been deleted. This event has been logged.', color=discord.Color.red())
+                await message.channel.send(embed=deleted_embed)
+
+                # Send a moderation log message to a moderation channel
+                moderation_channel = discord.utils.get(message.guild.text_channels, name='cryptcada-logs')
+                if moderation_channel:
+                    try:
+                        moderation_embed = discord.Embed(description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{stored_message}" ', color=discord.Color.red())
+                        await moderation_channel.send(embed=moderation_embed)
+                    except Exception as e:
+                        print(f"An error occurred: {e}")
+                # If there is no moderation channel, tell the server to use the %setup command.
+                else:
+                    nomod_embed = discord.Embed(description=f'Moderation log channel not found. Please set up the CRYPTCADA channels by running the %setup command.', color=discord.Color.red())
+                    await message.channel.send(embed=nomod_embed)
+            except Exception as e:
+                print(f"An error occurred: {e}")
+            # Send a warning message to the user
+            try:
+                await message.author.send(f'You have been warned in **"{message.guild.name}"** \n \n **Reason:** {warn_reason}')
+            except Exception as e:
+                print(f"An error occurred: {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
     # Check if the message contains a url
     if 'https://' in message.content or 'http://' in message.content or 'www.' in message.content:
@@ -139,6 +180,7 @@ async def on_message(message):
                 guild = message.guild
                 if guild:
                     try:
+                        # Set audit and warn reasons
                         audit_reason = f'Posted a link that was flagged as malicious by the CRYPTCADA bot, the message has been deleted.'
                         warn_reason = f'You posted a link that was flagged as malicious by the CRYPTCADA bot and it has been deleted, please refrain from posting malicious links in the server. \n \n *If you think this was a mistake, please open a ticket.*'
                         await message.delete()
@@ -150,15 +192,22 @@ async def on_message(message):
                         # Send a moderation log message to a moderation channel
                         moderation_channel = discord.utils.get(message.guild.text_channels, name='cryptcada-logs')
                         if moderation_channel:
-                            moderation_embed = discord.Embed(description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{stored_message}" ', color=discord.Color.red())
-                            await moderation_channel.send(embed=moderation_embed)
+                            try:
+                                moderation_embed = discord.Embed(description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{stored_message}" ', color=discord.Color.red())
+                                await moderation_channel.send(embed=moderation_embed)
+                            except Exception as e:
+                                print(f"An error occurred: {e}")
+                        # If there is no moderation channel, tell the server to use the %setup command.
                         else:
                             nomod_embed = discord.Embed(description=f'Moderation log channel not found. Please set up the CRYPTCADA channels by running the %setup command.', color=discord.Color.red())
                             await message.channel.send(embed=nomod_embed)
                     except Exception as e:
                         print(f"An error occurred: {e}")
                     # Send a warning message to the user
-                    await message.author.send(f'You have been warned in **"{message.guild.name}"** \n \n **Reason:** {warn_reason}')
+                    try:
+                        await message.author.send(f'You have been warned in **"{message.guild.name}"** \n \n **Reason:** {warn_reason}')
+                    except Exception as e:
+                        print(f"An error occurred: {e}")
             # If the link was not flagged as malicious, let the users know it is a safe to use link.
             else:
                 safe_embed = discord.Embed(description=f'The above posted link was ***not*** flagged as malicious and is safe to click.', color=discord.Color.red())
