@@ -59,9 +59,6 @@ async def send_embed_message(ctx, content, color):
 # Unregister the default 'help' command
 bot.remove_command('help')
 
-# Set wordlist
-wordfilter = ['nigger', 'chink', 'nigga', 'nigguh', 'niggar', 'dyke', 'faggot', 'fag', 'kike', 'spic']
-
 # List of meme subreddits
 meme_subreddits = ['memes', 'dankmemes', 'wholesomememes', 'ProgrammerHumor']
 
