@@ -63,12 +63,19 @@ meme_subreddits = ['memes', 'dankmemes', 'wholesomememes', 'ProgrammerHumor']
 
 @bot.event
 async def on_ready():
+    print(f" $$$$$$\  $$$$$$$\ $$\     $$\ $$$$$$$\ $$$$$$$$\  $$$$$$\   $$$$$$\  $$$$$$$\   $$$$$$\  ")
+    print(f"$$ /  \__|$$ |  $$ |\$$\ $$  / $$ |  $$ |  $$ |   $$ /  \__|$$ /  $$ |$$ |  $$ |$$ /  $$ |")
+    print(f"$$ |      $$$$$$$  | \$$$$  /  $$$$$$$  |  $$ |   $$ |      $$$$$$$$ |$$ |  $$ |$$$$$$$$ |")
+    print(f"$$ |      $$  __$$<   \$$  /   $$  ____/   $$ |   $$ |      $$  __$$ |$$ |  $$ |$$  __$$ |")
+    print(f"$$ |  $$\ $$ |  $$ |   $$ |    $$ |        $$ |   $$ |  $$\ $$ |  $$ |$$ |  $$ |$$ |  $$ |")
+    print(f"\$$$$$$  |$$ |  $$ |   $$ |    $$ |        $$ |   \$$$$$$  |$$ |  $$ |$$$$$$$  |$$ |  $$ |")
+    print(f" \______/ \__|  \__|   \__|    \__|        \__|    \______/ \__|  \__|\_______/ \__|  \__|")
     print(f'Logged in as {bot.user.name}')
     try:
         synced = await bot.tree.sync()
         print(f'Synced {len(synced)} command(s)')
     except Exception as e:
-        print(e)
+        print(f"An error occurred: {e}")
 
 @bot.event
 async def on_message(message):
@@ -138,26 +145,27 @@ async def on_message(message):
             if result['data']['attributes']['last_analysis_stats']['malicious'] > 0:
                 guild = message.guild
                 if guild:
-                    audit_reason = f'Posted a link that was flagged as malicious by the CRYPTCADA bot, the message has been deleted.'
-                    warn_reason = f'You posted a link that was flagged as malicious by the CRYPTCADA bot and it has been deleted, please refrain from posting malicious links in the server. \n \n *If you think this was a mistake, please open a ticket.*'
-                    await message.delete()
+                    try:
+                        audit_reason = f'Posted a link that was flagged as malicious by the CRYPTCADA bot, the message has been deleted.'
+                        warn_reason = f'You posted a link that was flagged as malicious by the CRYPTCADA bot and it has been deleted, please refrain from posting malicious links in the server. \n \n *If you think this was a mistake, please open a ticket.*'
+                        await message.delete()
 
-                    # After deleting the message, send a message to the channel to let people know of the event.
-                    deleted_embed = discord.Embed(description=f'{message.author.mention} posted a link that was flagged as malicious, the message has been deleted. This event has been logged.', color=discord.Color.red())
-                    await message.channel.send(embed=deleted_embed)
+                        # After deleting the message, send a message to the channel to let people know of the event.
+                        deleted_embed = discord.Embed(description=f'{message.author.mention} posted a link that was flagged as malicious, the message has been deleted. This event has been logged.', color=discord.Color.red())
+                        await message.channel.send(embed=deleted_embed)
 
-                    # Send a moderation log message to a moderation channel
-                    moderation_channel = discord.utils.get(message.guild.text_channels, name='cryptcada-logs')
-                    if moderation_channel:
-                        moderation_embed = discord.Embed(description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{stored_message}" ', color=discord.Color.red())
-                        await moderation_channel.send(embed=moderation_embed)
-                    else:
-                        nomod_embed = discord.Embed(description=f'Moderation log channel not found. Please set up the CRYPTCADA channels by running the %setup command.', color=discord.Color.red())
-                        await message.channel.send(embed=nomod_embed)
-
+                        # Send a moderation log message to a moderation channel
+                        moderation_channel = discord.utils.get(message.guild.text_channels, name='cryptcada-logs')
+                        if moderation_channel:
+                            moderation_embed = discord.Embed(description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{stored_message}" ', color=discord.Color.red())
+                            await moderation_channel.send(embed=moderation_embed)
+                        else:
+                            nomod_embed = discord.Embed(description=f'Moderation log channel not found. Please set up the CRYPTCADA channels by running the %setup command.', color=discord.Color.red())
+                            await message.channel.send(embed=nomod_embed)
+                    except Exception as e:
+                        print(f"An error occurred: {e}")
                     # Send a warning message to the user
                     await message.author.send(f'You have been warned in **"{message.guild.name}"** \n \n **Reason:** {warn_reason}')
-
             # If the link was not flagged as malicious, let the users know it is a safe to use link.
             else:
                 safe_embed = discord.Embed(description=f'The above posted link was ***not*** flagged as malicious and is safe to click.', color=discord.Color.red())
@@ -181,19 +189,22 @@ async def setup(ctx):
         await send_embed_message(ctx, 'Cryptcada channels and category have already been set up.', discord.Color.red())
     else:
         if ctx.message.author.guild_permissions.administrator:
-            # Create Cryptcada category if not already existing
-            if not cryptcada_category:
-                cryptcada_category = await ctx.guild.create_category('Cryptcada')
+            try:
+                # Create Cryptcada category if not already existing
+                if not cryptcada_category:
+                    cryptcada_category = await ctx.guild.create_category('Cryptcada')
 
-            # Create Cryptcada-logs channel if not already existing
-            if not cryptcada_logs_channel:
-                cryptcada_logs_channel = await ctx.guild.create_text_channel('cryptcada-logs', category=cryptcada_category)
+                # Create Cryptcada-logs channel if not already existing
+                if not cryptcada_logs_channel:
+                    cryptcada_logs_channel = await ctx.guild.create_text_channel('cryptcada-logs', category=cryptcada_category)
 
-            # Set category permissions
-            await cryptcada_category.set_permissions(ctx.guild.default_role, read_messages=False)
-            await cryptcada_category.set_permissions(ctx.guild.me, read_messages=True)  # Allow the bot to read messages in the category
+                # Set category permissions
+                await cryptcada_category.set_permissions(ctx.guild.default_role, read_messages=False)
+                await cryptcada_category.set_permissions(ctx.guild.me, read_messages=True)  # Allow the bot to read messages in the category
 
-            await send_embed_message(ctx, f'Cryptcada channels and category have been set up successfully.', discord.Color.red())
+                await send_embed_message(ctx, f'Cryptcada channels and category have been set up successfully.', discord.Color.red())
+            except Exception as e:
+                print(f"An error occurred: {e}")
         else:
             await send_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
 
@@ -204,30 +215,33 @@ async def ping(ctx):
 
 @bot.command(name='meme', description="Sends a random meme from reddit.")
 async def meme(ctx):
-    # Randomly select a subreddit from the list
-    selected_subreddit = random.choice(meme_subreddits)
+    try:
+        # Randomly select a subreddit from the list
+        selected_subreddit = random.choice(meme_subreddits)
 
-    # Scrape a meme from the selected subreddit
-    subreddit = reddit.subreddit(selected_subreddit)
-    post = subreddit.random()
+        # Scrape a meme from the selected subreddit
+        subreddit = reddit.subreddit(selected_subreddit)
+        post = subreddit.random()
 
-    if post:
-        # Convert the created_utc timestamp to a datetime object
-        created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
+        if post:
+            # Convert the created_utc timestamp to a datetime object
+            created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
 
-        embed = discord.Embed(color=discord.Color.red())
-        embed.set_image(url=post.url)  # Display the image or video
-        embed.set_author(name=post.author.name, icon_url=post.author.icon_img)  # Display the author's name and profile image
-        embed.timestamp = created_time  # Display the time when it was posted
-        embed.add_field(name="Original Post", value=f"[View on Reddit in r/{selected_subreddit}]({post.url})", inline=False)  # Add a link to the original post and mention the subreddit
-        await ctx.send(embed=embed)
-    else:
-        await send_embed_message(ctx, f"No memes found in /r/{selected_subreddit}", discord.Color.red())
+            embed = discord.Embed(color=discord.Color.red())
+            embed.set_image(url=post.url)  # Display the image or video
+            embed.set_author(name=post.author.name, icon_url=post.author.icon_img)  # Display the author's name and profile image
+            embed.timestamp = created_time  # Display the time when it was posted
+            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{selected_subreddit}]({post.url})", inline=False)  # Add a link to the original post and mention the subreddit
+            await ctx.send(embed=embed)
+        else:
+            await send_embed_message(ctx, f"No memes found in /r/{selected_subreddit}", discord.Color.red())
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 @bot.command(name='search_reddit', description="Search reddit based on a query.")
 async def search_reddit(ctx, query):
-    # Search Reddit for posts based on a query
     try:
+        # Search Reddit for posts based on a query
         search_results = reddit.subreddit("all").search(query, limit=5)
         result_message = "Search Results:\n"
         for submission in search_results:
@@ -243,7 +257,7 @@ async def search_reddit(ctx, query):
             result_message += f"**{submission.title}**\n"
             await ctx.send(embed=embed)
     except Exception as e:
-        await send_embed_message(ctx, f"An error occurred: {e}", discord.Color.red())
+        print(f"An error occurred: {e}")
 
 @bot.command(name='question', description="Ask ChatGPT a question.")
 async def question(ctx, *, question):
