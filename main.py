@@ -207,8 +207,7 @@ async def on_message(message):
                         print(f"An error occurred: {e}")
             # If the link was not flagged as malicious, let the users know it is a safe to use link.
             else:
-                safe_embed = discord.Embed(description=f'The above posted link was ***not*** flagged as malicious and is safe to click.', color=discord.Color.red())
-                await message.channel.send(embed=safe_embed)
+                return
         else:
             await message.channel.send('Error scanning the URL.')
     else:
