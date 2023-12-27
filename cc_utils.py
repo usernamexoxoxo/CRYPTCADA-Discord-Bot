@@ -21,7 +21,7 @@ async def on_mal_msg(message):
     moderation_channel = discord.utils.get(message.guild.text_channels, name='cryptcada-logs')
     if moderation_channel:
         moderation_embed = discord.Embed(
-            description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{stored_message}" ',
+            description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{message.content}" ',
             color=discord.Color.red())
         await moderation_channel.send(embed=moderation_embed)
     else:
@@ -33,16 +33,16 @@ async def on_mal_msg(message):
     # Send a warning message to the user
     await message.author.send(f'You have been warned in **"{message.guild.name}"** \n \n **Reason:** {warn_reason}')
 
-async def sanitize_urls(msg):
+async def sanitize_urls(message):
 
-    print(f'received message: {msg}')
+    print(f'received message: {message.content}')
     try:
         # regex for urls
         url_re = r'(?:https?://|www\.)\S+'
         print(f'url_re: {url_re}')
 
         # list for all urls in msg
-        urls = re.findall(url_re, msg)
+        urls = re.findall(url_re, message.content)
 
         # print the list of urls for console logging
         print(f'Received these urls: {urls}')
