@@ -209,26 +209,29 @@ async def search_reddit(ctx, query):
             # Add the post's title
             embed.description = f'{original_post_link} \n **{post.title}** \n '
 
+            # If there is a description, add it to the embed
+            if post.selftext:
+                embed.description += f'{post.selftext}'
             # If there is an image, add it to the embed
             if media_type == "image":
                 embed.set_image(url=post.url)
             # If there is a video, add it to the embed
-            elif media_type == "video":
+            if media_type == "video":
+                embed.set_image(url=post.url)
+            # If there is a youtube link in the post, add it to the embed
+            if f'youtube' in post.url or f'youtu.be' in post.url:
                 embed.description += f'\n<{post.url}>\n'
-                embed.set_thumbnail(url=post.url)
-            # If there is any other media, add it to the embed
-            else:
-                print(f'{post} Media Type: {media_type}')
-                embed.description += f'\n<{post.url}>\n'
-                embed.set_thumbnail(url=post.url)
-            # If there is a description, add it to the embed
-            if post.selftext:
-                embed.description += f'{post.selftext}'
+                # Assuming the first image in the preview is the thumbnail
+                thumbnail_url = post.preview['images'][0]['source']['url']
+                # Set the thumbnail
+                embed.set_image(url=thumbnail_url)
 
             # Display the time when it was posted
             embed.timestamp = created_time
 
-            await ctx.send(embed=embed)
+            # Make sure no discord invites are in the post and then send it.
+            if f'discord' not in post.url:
+                await ctx.send(embed=embed)
     except Exception as e:
         print(f"An error occurred: {e}")
 
