@@ -59,7 +59,7 @@ async def send_embed_message(ctx, content, color):
 
 async def slash_embed_message(interaction: Interaction, content: str, color: Color):
     embed = Embed(description=content, color=color)
-    await interaction.followup.send(embed=embed)
+    await interaction.respond(embed=embed)
 
 # Unregister the default 'help' command
 bot.remove_command('help')
