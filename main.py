@@ -190,7 +190,7 @@ async def search_reddit(ctx, query):
 
         for post in search_results:
             # Check if the post has media content
-            if post.media or (hasattr(post, 'preview') and 'images' in post.preview):
+            if post.media and (hasattr(post, 'preview') and 'images' in post.preview):
                 print(f'post with media found: {post}')
                 # Add the post to the list if it has images or videos
                 posts_with_images.append(post)
