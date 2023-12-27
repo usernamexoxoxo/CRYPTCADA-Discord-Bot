@@ -194,7 +194,10 @@ async def search_reddit(ctx, query):
         search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
 
         # Filter out posts that have already been displayed
-        new_posts = [post for post in search_results if post.id not in displayed_posts][:4]
+        new_posts = [post for post in search_results if post.id not in displayed_posts][:3]
+
+        # Set has_ran value so the function doesn't loop infinitely
+        has_ran = False
 
         async def send_posts():
             for post in new_posts:
@@ -250,10 +253,11 @@ async def search_reddit(ctx, query):
                     await ctx.send(embed=embed)
 
         # Send the posts
-        await send_posts(new_posts)
+        if has_ran == False
+            await send_posts(new_posts)
 
         # Ask the user if they want to see more posts
-        message = await ctx.send("Do you want to see more posts? React with ✅ for more or ❌ to stop.")
+        message = await send_embed_message(ctx, f"Do you want to see more posts? React with ✅ for more or ❌ to stop.", discord.Color.red())
         await message.add_reaction('✅')
         await message.add_reaction('❌')
 
@@ -268,10 +272,12 @@ async def search_reddit(ctx, query):
 
                 # Check the user's reaction
                 if str(reaction.emoji) == '✅':
-                    new_posts = [post for post in search_results if post.id not in displayed_posts][:4]
-                    await send_posts(new_posts) 
+                    has_ran = True
+                    new_posts = [post for post in search_results if post.id not in displayed_posts][:3]
+                    await send_posts(new_posts)
                 elif str(reaction.emoji) == '❌':
-                    await ctx.send("Stopping the display of more posts.")
+                    has_ran = False
+                    await send_embed_message(ctx, f"Stopping the display of more posts.", discord.Color.red())
                     break
         except Exception as e:
             print(f'An error occurred: {e}')
