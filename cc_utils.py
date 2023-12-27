@@ -44,13 +44,14 @@ async def sanitize_urls(msg):
 
         # print the list of urls for console logging
         print(f'Received these urls: {urls}')
-    except Exception as e:
-        print(f'An error has occurred: {e}')
 
     # if urls is empty, we can return the original msg, otherwise we continue and
     # check if the urls are malicious
-    if not urls:
-        return "OK"
+        if not urls:
+            return "OK"
+
+    except Exception as e:
+        print(f'An error has occurred: {e}')
 
     for url in urls:
 
