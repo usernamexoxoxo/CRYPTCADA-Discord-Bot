@@ -80,7 +80,7 @@ async def on_message(message):
     vt_url = None # Initialize vt_url variable
 
     # check if the msg contains a url/s, and if it does, if it/they are malicious
-    is_mal = sanitize_urls(message)
+    is_mal = await sanitize_urls(message)
 
     # if the url/s is safe, we send the msg to the chat
     # otherwise, we warn the sender, log the event, and delete the msg
