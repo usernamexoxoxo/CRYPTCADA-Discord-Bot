@@ -196,6 +196,9 @@ async def search_reddit(ctx, query):
         # Filter out posts that have already been displayed
         new_posts = [post for post in search_results if post.id not in displayed_posts][:4]
 
+        # Send the posts
+        send_posts()
+
         async def send_posts():
             for post in new_posts:
 
