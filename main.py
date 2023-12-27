@@ -67,6 +67,9 @@ bot.remove_command('help')
 # List of meme subreddits
 meme_subreddits = ['memes', 'dankmemes', 'wholesomememes', 'ProgrammerHumor']
 
+# List of reddit posts
+displayed_posts = set()
+
 # Initialize offensive_msg and set it to False
 offensive_msg = False
 
@@ -188,7 +191,15 @@ async def search_reddit(ctx, query):
 
         print(f'%search_reddit command ran with query: {query}')
 
-        for post in search_results:
+        global displayed_posts
+
+        # Fetch 50 posts based on the user's query
+        search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
+
+        # Filter out posts that have already been displayed
+        new_posts = [post for post in search_results if post.id not in displayed_posts][:4]
+
+        for post in new_posts:
 
             # Check the media type of the posts
             media_type = getattr(post.media, "type", None)
@@ -236,7 +247,48 @@ async def search_reddit(ctx, query):
 
             # Make sure no discord invites are in the post and then send it.
             if f'discord' not in post.url:
+                # Add the post ID to the set of displayed posts
+                displayed_posts.add(post.id)
                 await ctx.send(embed=embed)
+
+        # Ask the user if they want to see more posts
+        message = await ctx.send("Do you want to see more posts? React with ✅ for more or ❌ to stop.")
+        await message.add_reaction('✅')
+        await message.add_reaction('❌')
+
+        # Function to check user reaction
+        def check(reaction, user):
+            return user == ctx.message.author and str(reaction.emoji) in ['✅', '❌']
+
+        try:
+            while True:
+                # Wait for the user's reaction
+                reaction, user = await bot.wait_for('reaction_add', check=check)
+
+                # Check the user's reaction
+                if str(reaction.emoji) == '✅':
+                    # Fetch 50 more posts based on the user's query
+                    search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
+
+                    # Filter out posts that have already been displayed
+                    new_posts = [post for post in search_results if post.id not in displayed_posts][:4]
+
+                    for post in new_posts:
+                        # ... (Your existing post processing logic)
+
+                        # Make sure no discord invites are in the post and then send it.
+                        if f'discord' not in post.url:
+                            await ctx.send(embed=embed)
+
+                            # Add the post ID to the set of displayed posts
+                            displayed_posts.add(post.id)
+
+                elif str(reaction.emoji) == '❌':
+                    await ctx.send("Stopping the display of more posts.")
+                    break
+        except Exception as e:
+            print(f'An error occurred: {e}')
+
     except Exception as e:
         print(f"An error occurred: {e}")
 
