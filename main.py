@@ -183,6 +183,7 @@ async def search_reddit(ctx, query):
     try:
         # Search Reddit for posts based on a query
         search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
+        posts_with_images = ""
 
         for post in search_results:
             # Check if the post has media content
