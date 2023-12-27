@@ -57,7 +57,7 @@ async def send_embed_message(ctx, content, color):
     embed = discord.Embed(description=content, color=color)
     await ctx.send(embed=embed)
 
-async def slash_embed_message(interaction: Interaction, content: str, color: Color):
+async def slash_embed_message(interaction, content: str, color: Color):
     embed = Embed(description=content, color=color)
     await interaction.send(embed=embed)
 
