@@ -2,7 +2,7 @@
 
 Welcome to the CRYPTCADA Discord Bot, created by GAZE aka UzerZero! CRYPTCADA is a multifunctional bot designed to provide various services, from fetching memes and interacting with OpenAI's ChatGPT to server security by scanning all posted URLs with VirusTotal.
 
-[Invite CRYPTCADA to *your* server!](https://discord.com/api/oauth2/authorize?client_id=1158761436001091595&permissions=8&scope=bot+applications.commands)
+[BOT INVITE LINK](https://discord.com/api/oauth2/authorize?client_id=1158761436001091595&permissions=8&scope=bot+applications.commands)
 
 ## Table of Contents
 
@@ -23,7 +23,7 @@ Welcome to the CRYPTCADA Discord Bot, created by GAZE aka UzerZero! CRYPTCADA is
 
 ## Setup
 
-Use the link above to invite the bot to your server!
+[Invite CRYPTCADA to *your* server!](https://discord.com/api/oauth2/authorize?client_id=1158761436001091595&permissions=8&scope=bot+applications.commands)
 To set up the CRYPTCADA channels and log category, simply use the `/setup` command. Make sure you have administrative permissions in the server.
 
 ## Commands
