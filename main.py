@@ -192,7 +192,7 @@ async def search_reddit(ctx, query):
 
             # Check the media type of the posts
             media_type = getattr(post.media, "type", None)
-            print(f'post found: {post}')
+            print(f'post found: ""{post}"" with media type: {media_type}')
 
             # Convert the created_utc timestamp to a datetime object
             created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
