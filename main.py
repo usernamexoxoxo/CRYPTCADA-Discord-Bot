@@ -55,7 +55,7 @@ openai.api_key = OPENAI_API_KEY
 # Initialize Embed Messages
 async def send_embed_message(ctx, content, color):
     embed = discord.Embed(description=content, color=color)
-    await ctx.send(embed=embed)
+    return await ctx.send(embed=embed)
 
 async def slash_embed_message(interaction, content: str, color: Color):
     embed = Embed(description=content, color=color)
