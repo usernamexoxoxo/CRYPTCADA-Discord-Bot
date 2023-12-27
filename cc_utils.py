@@ -38,7 +38,7 @@ async def sanitize_urls(message):
     print(f'received message')
     try:
         # regex for urls
-        url_re = r'(?:https?://|www\.)\S+'
+        url_re = r"(www.|http.?\://).*?(?=[<`\n \"\'])"
 
         # list for all urls in msg
         urls = set(re.findall(url_re, message.content))
@@ -56,7 +56,7 @@ async def sanitize_urls(message):
         for url in urls:
 
             # unquote the url to get rid of any obfuscation that may or may not be present
-            url = unquote(url).strip("(").strip(")").strip("`").strip("<").strip(">").strip('"').strip("'").strip("[").strip("]")
+            url = unquote(url)
 
             try:
                 # encode url in base64 and send to VirusTotal API for threat detection
