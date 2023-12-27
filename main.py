@@ -57,6 +57,10 @@ async def send_embed_message(ctx, content, color):
     embed = discord.Embed(description=content, color=color)
     await ctx.send(embed=embed)
 
+async def slash_embed_message(interaction: Interaction, content: str, color: Color):
+    embed = Embed(description=content, color=color)
+    await interaction.followup.send(embed=embed)
+
 # Unregister the default 'help' command
 bot.remove_command('help')
 
@@ -156,9 +160,9 @@ async def setup(ctx):
             await send_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
 
 @bot.tree.command(name='ping', description="Sends the bot's latency.")
-async def ping(ctx):
+async def ping(ctx: Interaction):
     latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
-    await send_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
+    await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
 
 #@bot.command(name='ping', description="Sends the bot's latency.")
 #async def ping(ctx):
