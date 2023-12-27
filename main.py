@@ -187,10 +187,10 @@ async def search_reddit(ctx, query):
         posts_with_images = []
 
         print(f'%search_reddit command ran with query: {query}')
-        
+
         for post in search_results:
             # Check if the post has media content
-            if post.media and (post.media.get("type") == "image" or post.media.get("type") == "video"):
+            if post.media or (hasattr(post, 'preview') and 'images' in post.preview):
                 print(f'post with media found: {post}')
                 # Add the post to the list if it has images or videos
                 posts_with_images.append(post)
