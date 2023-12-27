@@ -188,9 +188,12 @@ async def search_reddit(ctx, query):
 
         print(f'%search_reddit command ran with query: {query}')
 
+        # Send a "searching for posts..." message
+        search_message = await send_embed_message(ctx, f'searching for posts...', discord.Color.red())
+
         for post in search_results:
             # Check if the post has media content
-            if (hasattr(post, 'preview') and 'images' in post.preview) and post.media and post.media.get("type") == "image":
+            if (hasattr(post, 'preview') and 'images' in post.preview):
 
                 print(f'post with media found: {post}')
                 # Add the post to the list if it has images or videos
@@ -201,9 +204,14 @@ async def search_reddit(ctx, query):
                     break
 
         if not posts_with_images:
-            # If no posts with images were found, inform the user
+            # Delete the "searching for posts..." message
+            await search_message.delete()
+            # Inform the user that no posts were found for that query
             await send_embed_message(ctx, f"No posts were found for that query.", discord.Color.red())
         else:
+            # Delete the "searching for posts..." message
+            await search_message.delete()
+            # Send the found reddit posts
             for post in posts_with_images:
                 # Convert the created_utc timestamp to a datetime object
                 created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
