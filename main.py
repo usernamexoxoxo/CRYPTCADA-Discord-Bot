@@ -182,7 +182,7 @@ async def meme(ctx):
 async def search_reddit(ctx, query):
     try:
         # Search Reddit for posts based on a query
-        search_results = reddit.subreddit("all").search(query, limit=5)
+        search_results = reddit.subreddit("all").search(query, sort=new, limit=5)
         for post in search_results:
             # Convert the created_utc timestamp to a datetime object
             created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
