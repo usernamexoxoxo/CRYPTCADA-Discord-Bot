@@ -218,6 +218,7 @@ async def search_reddit(ctx, query):
                 embed.set_thumbnail(url=post.url)
             # If there is any other media, add it to the embed
             else:
+                print(f'{post} Media Type: {media_type}')
                 embed.description += f'\n<{post.url}>\n'
                 embed.set_thumbnail(url=post.url)
             # If there is a description, add it to the embed
