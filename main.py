@@ -211,7 +211,7 @@ async def search_reddit(ctx, query):
 
             # If there is a description, add it to the embed
             if post.selftext:
-                embed.description += f'{post.selftext}'
+                embed.description += f'*{post.selftext}*'
             # If there is an image, add it to the embed
             if media_type == "image":
                 embed.set_image(url=post.url)
