@@ -21,7 +21,7 @@ async def on_mal_msg(message):
     moderation_channel = discord.utils.get(message.guild.text_channels, name='cryptcada-logs')
     if moderation_channel:
         moderation_embed = discord.Embed(
-            description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{message.content}" ',
+            description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n `{message.author.mention}: "{message.content}"` ',
             color=discord.Color.red())
         await moderation_channel.send(embed=moderation_embed)
     else:
