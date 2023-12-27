@@ -317,7 +317,7 @@ async def setup(ctx: Interaction):
     cryptcada_category = discord.utils.get(ctx.guild.categories, name='Cryptcada')
     cryptcada_logs_channel = discord.utils.get(ctx.guild.text_channels, name='cryptcada-logs')
 
-    if not ctx.message.author.guild_permissions.administrator:
+    if not ctx.author.guild_permissions.administrator:
         await slash_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
     else:
         if cryptcada_category and cryptcada_logs_channel:
