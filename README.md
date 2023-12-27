@@ -11,11 +11,12 @@ Welcome to the CRYPTCADA Discord Bot, created by GAZE aka UzerZero! CRYPTCADA is
 - [Commands](#commands)
 - [Support](#support)
 - [Contributing](#contributing)
+- [Credits](#credits)
 
 ## Features
 
 - **VirusTotal Integration:** CRYPTCADA scans posted URLs for potential malicious content using VirusTotal.
-- **Sever Moderation:** CRYPTCADA also scans all posted messages for highly offensive words and has a 'logs' channel where all offensive or malicious flagged messages and URLs are logged for easy moderation.
+- **Sever Moderation:** CRYPTCADA also scans all posted messages for highly offensive words and has a 'logs' channel where all offensive or malicious messages and URLs are logged for easy moderation.
 - **Reddit Integration:** Fetch random memes or search Reddit for posts based on a query.
 - **OpenAI ChatGPT Integration:** Use OpenAI's ChatGPT to ask questions, seek coding advice, or get a joke.
 - **Text Translation:** Translate between different ciphers and encodings, including binary, hexadecimal, and it's own new cipher "Chill++".
@@ -45,3 +46,9 @@ For any issues, questions, or suggestions, please join our [support server](http
 ## Contributing
 
 Contributions are welcome! Feel free to submit pull requests or open issues.
+
+## Credits
+
+@LJ4 - Bug hunting and stress testing
+@xoxoxo - Improved version of the URL scanning
+@chiefu - Coding solutions
