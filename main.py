@@ -14,7 +14,7 @@
 import os
 import discord
 from discord.ext import commands
-from discord import app_commands
+from discord import app_commands, Interaction, Embed, Color
 from urllib.parse import urlparse, unquote
 import praw
 import openai
