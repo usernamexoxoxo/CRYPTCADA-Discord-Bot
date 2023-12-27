@@ -79,8 +79,6 @@ async def on_ready():
 @bot.event
 async def on_message(message):
 
-    await bot.process_commands(message)  # Make sure to call this to process commands
-
     vt_url = None # Initialize vt_url variable
 
     # check if the msg contains a url/s, and if it does, if it/they are malicious
@@ -129,6 +127,8 @@ async def on_message(message):
                 print(f"An error occurred: {e}")
     except Exception as e:
         print(f"An error occurred: {e}")
+
+    await bot.process_commands(message)  # Make sure to call this to process commands
 
 @bot.command(name='meme', description="Sends a random meme from reddit.")
 async def meme(ctx):
