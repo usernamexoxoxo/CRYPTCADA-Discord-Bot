@@ -190,12 +190,13 @@ async def search_reddit(ctx, query):
 
         for post in search_results:
             # Check if the post has media content
-            if (hasattr(post, 'preview') and 'images' in post.preview):
+            if (hasattr(post, 'preview') and 'images' in post.preview) and post.media and post.media.get("type") == "image":
+
                 print(f'post with media found: {post}')
                 # Add the post to the list if it has images or videos
                 posts_with_images.append(post)
 
-                # Break the loop when we have collected 3 posts with media
+                # Break the loop when we have collected 3 posts with images
                 if len(posts_with_images) == 3:
                     break
 
