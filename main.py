@@ -110,7 +110,7 @@ async def on_message(message):
                 moderation_channel = discord.utils.get(message.guild.text_channels, name='cryptcada-logs')
                 if moderation_channel:
                     try:
-                        moderation_embed = discord.Embed(description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{stored_message}" ', color=discord.Color.red())
+                        moderation_embed = discord.Embed(description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: `{message.content}` ', color=discord.Color.red())
                         await moderation_channel.send(embed=moderation_embed)
                     except Exception as e:
                         print(f"An error occurred: {e}")
