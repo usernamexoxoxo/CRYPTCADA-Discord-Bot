@@ -186,7 +186,7 @@ async def search_reddit(ctx, query):
         # Initialize an empty list to store posts with images
         posts_with_images = []
         # Initialize an empty list to store already seen posts
-        displayed_posts = []
+        displayed_posts = ()
 
         print(f'%search_reddit command ran with query: {query}')
 
