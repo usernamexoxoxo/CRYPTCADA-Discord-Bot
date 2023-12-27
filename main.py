@@ -26,7 +26,7 @@ import subprocess
 import requests
 import base64
 from wordfilter import wordfilter
-from cc_utils import on_mal_msg, on_safe_msg, sanitize_urls
+from cc_utils import on_mal_msg, sanitize_urls
 from config import DISCORD_BOT_TOKEN, REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT, OPENAI_API_KEY, VIRUSTOTAL_API_KEY
 
 # Configure the logger
@@ -85,7 +85,7 @@ async def on_message(message):
     # if the url/s is safe, we send the msg to the chat
     # otherwise, we warn the sender, log the event, and delete the msg
     if is_mal == "OK":
-        on_safe_msg(message)
+        return
     elif is_mal == "ERR":
         on_mal_msg(message)
 

@@ -33,9 +33,6 @@ async def on_mal_msg(message):
     # Send a warning message to the user
     await message.author.send(f'You have been warned in **"{message.guild.name}"** \n \n **Reason:** {warn_reason}')
 
-async def on_safe_msg(message):
-    return
-
 async def sanitize_urls(msg):
 
     try:
