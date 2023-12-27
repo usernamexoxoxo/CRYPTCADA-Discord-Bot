@@ -39,17 +39,18 @@ async def sanitize_urls(message):
     try:
         # regex for urls
         url_re = r'(?:https?://|www\.)\S+'
-        print(f'url_re: {url_re}')
 
         # list for all urls in msg
         urls = re.findall(url_re, message.content)
 
         # print the list of urls for console logging
-        print(f'Received these urls: {urls}')
+        if urls:
+            print(f'Received these urls: {urls}')
 
     # if urls is empty, we can return the original msg, otherwise we continue and
     # check if the urls are malicious
         if not urls:
+            print(f'no urls in message')
             return "OK"
 
         for url in urls:
