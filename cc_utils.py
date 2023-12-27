@@ -45,7 +45,7 @@ async def sanitize_urls(message):
 
         # print the list of urls for console logging
         if urls:
-            print(f'Received these urls: {urls}')
+            print(f'Found these urls in the message: {urls}')
 
     # if urls is empty, we can return the original msg, otherwise we continue and
     # check if the urls are malicious
@@ -74,6 +74,11 @@ async def sanitize_urls(message):
             except Exception as e:
                 print(f'An error has occured: {e}')
 
+            # if no data was found in results return an error and continue to check the rest of the urls if applicable
+            if 'data' not in result:
+                print(f'error scanning url, no data found in results')
+                continue
+
             # check if the result flagged the url, and if it did, return error msg
             if 'data' in result:
                 if result['data']['attributes']['last_analysis_stats']['malicious'] > 0:
@@ -83,17 +88,13 @@ async def sanitize_urls(message):
                         return 'ERR'
                     else:
                         print(f'error getting server.')
-
-                # if we get to this point, we know that all the urls passed the VirusTotal scan,
-                # and we can deem the msg safe
                 else:
-                    print(f'{url} returned safe')
-                    return "OK"
+                    continue
 
-            # if 'data' wasn't found in results return an error
-            else:
-                print(f'error scanning url, no data found in results')
-                return "OK"
+            # if we get to this point, we know that all the urls passed the VirusTotal scan,
+            # and we can deem the msg safe
+
+            return "OK"
 
     except Exception as e:
         print(f'An error has occurred: {e}')
