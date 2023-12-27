@@ -219,8 +219,6 @@ async def search_reddit(ctx, query):
                 # Add the post's title
                 embed.description = f'{post.title} \n {original_post_link}'
 
-                print(f'media type: {post.media.get("type")}')
-
                 # Add the image or video
                 embed.set_image(url=post.url)
 
