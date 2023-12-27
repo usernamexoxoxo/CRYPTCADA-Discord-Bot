@@ -78,17 +78,22 @@ async def sanitize_urls(message):
             if 'data' in result:
                 if result['data']['attributes']['last_analysis_stats']['malicious'] > 0:
                     print(f'{url} was deemed malicious by VirusTotal')
-                    guild = msg.guild
+                    guild = message.guild
                     if guild:
                         return 'ERR'
                     else:
                         print(f'error getting server.')
+
+                # if we get to this point, we know that all the urls passed the VirusTotal scan,
+                # and we can deem the msg safe
                 else:
-                    continue
+                    print(f'{url} returned safe')
+                    return "OK"
 
-            # if we get to this point, we know that all the urls passed the VirusTotal scan,
-            # and we can deem the msg safe
+            # if 'data' wasn't found in results return an error
+            else:
+                print(f'error scanning url, no data found in results')
+                return "OK"
 
-            return "OK"
     except Exception as e:
         print(f'An error has occurred: {e}')
