@@ -164,11 +164,6 @@ async def ping(ctx: Interaction):
     latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
     await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
 
-#@bot.command(name='ping', description="Sends the bot's latency.")
-#async def ping(ctx):
-#    latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
-#    await send_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
-
 @bot.command(name='meme', description="Sends a random meme from reddit.")
 async def meme(ctx):
     try:
@@ -345,11 +340,10 @@ async def translate(ctx, *, input_text):
     else:
         await send_embed_message(ctx, "Invalid input type. Use text, binary, hexadecimal or chill++.", discord.Color.red())
 
-@bot.command(name='help', description="Tells you all the available commands.")
-async def help(ctx):
+@bot.tree.command(name='help', description="Tells you all the available commands.")
+async def help(ctx: Interaction):
     # Define a dictionary of commands and their explanations with formatting
     commands_info = {
-        '**%ping**':  'Tells you the bots latency.',
         '**%question  < question >**':  'Ask ChatGPT a question.',
         '**%fix_code  < code >**':  'Let ChatGPT fix your code for you.',
         '**%joke**':  'Get a random joke from ChatGPT.',
@@ -358,7 +352,8 @@ async def help(ctx):
         '**%translate  < Text to translate >**':  'Translate between text, binary, hexadecimal and chill++.',
         '**%lincom  < command name >**':  'Get a command explanation from ChatGPT.',
         '**%setup**':  'Set up the CRYPTCADA log channel. (Admin permissions required)',
-        '**%help**':  'Show this help message.'
+        '**/ping**':  'Tells you the bots latency.',
+        '**/help**':  'Show this help message.'
     }
 
     # Create a formatted help message
@@ -367,7 +362,7 @@ async def help(ctx):
         help_message += f"{command}:  {description}\n"
 
     # Send the help message to the user with code formatting
-    await ctx.send(f">>> {help_message}")
+    await slash_embed_message(ctx, f"{help_message}", discord.Color.red())
 
 # Run the bot
 bot.run(DISCORD_BOT_TOKEN)
