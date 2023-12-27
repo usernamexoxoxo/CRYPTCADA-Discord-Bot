@@ -256,7 +256,7 @@ async def search_reddit(ctx, query):
                     await ctx.send(embed=embed)
             if len(new_posts) == 0:
                 await send_embed_message(ctx, f'No more posts to display, please run the command again.', discord.Color.red())
-                break
+                return
 
         # Send the posts
         if has_ran == False:
