@@ -252,6 +252,8 @@ async def search_reddit(ctx, query):
                     new_posts.remove(post)
                     # log
                     print(f'Displayed Posts: {displayed_posts} New Posts: {new_posts}')
+                else:
+                    print(f'discord link in post {post}')
 
             if len(new_posts) == 0:
                 await send_embed_message(ctx, f'No more posts to display, please run the command again.', discord.Color.red())
