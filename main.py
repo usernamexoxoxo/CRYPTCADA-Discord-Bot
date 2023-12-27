@@ -170,7 +170,7 @@ async def meme(ctx):
             embed.set_image(url=post.url)
 
             # Display the time when it was posted
-            embed.timestamp = f'Post created on: {created_time}'
+            embed.timestamp = created_time
 
             await ctx.send(embed=embed)
         else:
@@ -203,7 +203,7 @@ async def search_reddit(ctx, query):
             embed.set_image(url=post.url)
 
             # Display the time when it was posted
-            embed.timestamp = f'Post created on: {created_time}'
+            embed.timestamp = created_time
 
             await ctx.send(embed=embed)
     except Exception as e:
