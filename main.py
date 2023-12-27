@@ -182,7 +182,7 @@ async def meme(ctx):
 async def search_reddit(ctx, query):
     try:
         # Search Reddit for posts based on a query
-        search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
+        search_results = reddit.subreddit("all").search(query, sort="new", limit=4)
         # Initialize an empty list to store posts with images
         posts_with_images = []
 
@@ -192,23 +192,11 @@ async def search_reddit(ctx, query):
         search_message = await send_embed_message(ctx, f'searching for posts...', discord.Color.red())
 
         for post in search_results:
-            # Check if the post has media content
-            if (hasattr(post, 'preview') and 'images' in post.preview):
 
-                print(f'post with media found: {post}')
-                # Add the post to the list if it has images or videos
-                posts_with_images.append(post)
+            # Check the media type of the posts
+            media_type = getattr(post.media, "type", None)
+            print(f'post found: {post}')
 
-                # Break the loop when we have collected 3 posts with images
-                if len(posts_with_images) == 3:
-                    break
-
-        if not posts_with_images:
-            # Delete the "searching for posts..." message
-            await search_message.delete()
-            # Inform the user that no posts were found for that query
-            await send_embed_message(ctx, f"No posts were found for that query.", discord.Color.red())
-        else:
             # Delete the "searching for posts..." message
             await search_message.delete()
             # Send the found reddit posts
@@ -228,11 +216,15 @@ async def search_reddit(ctx, query):
                 # Add the post's title
                 embed.description = f'{post.title} \n {original_post_link} \n '
 
-                # Add the image to the embed
+                # If there is an image, add it to the embed
                 media_type = getattr(post.media, "type", None)
                 if media_type == "image":
                     embed.set_image(url=post.url)
-                # If there is no image in the post, add the description instead
+                # If there is a video, add it to the embed
+                if media_type == "video":
+                    embed.description += f'\n<{post.url}>\n'
+                    embed.set_thumbnail(url=post.url)
+                # If there is a description, add it to the embed
                 if post.selftext:
                     embed.description += f'{post.selftext}'
                 else:
