@@ -182,8 +182,19 @@ async def meme(ctx):
 async def search_reddit(ctx, query):
     try:
         # Search Reddit for posts based on a query
-        search_results = reddit.subreddit("all").search(query, sort="new", limit=5)
+        search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
+
         for post in search_results:
+            # Check if the post has media content
+            if post.media and post.media.get("type") in ["image", "video"]:
+                # Add the post to the list if it has images or videos
+                posts_with_images.append(post)
+
+                # Break the loop when we have collected 3 posts with media
+                if len(posts_with_images) == 3:
+                    break
+
+        for post in posts_with_images:
             # Convert the created_utc timestamp to a datetime object
             created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
 
