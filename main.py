@@ -67,6 +67,9 @@ bot.remove_command('help')
 # List of meme subreddits
 meme_subreddits = ['memes', 'dankmemes', 'wholesomememes', 'ProgrammerHumor']
 
+# Initialize offensive_msg and set it to False
+offensive_msg = False
+
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user.name}')
@@ -95,6 +98,7 @@ async def on_message(message):
     try:
         # Check if any of the words are in the wordlist
         if any(word in message.content.lower().split(' ') for word in wordfilter):
+            offensive_msg = True
             stored_message = message.content # Store the message right away.
             await message.delete() # Delete the message in question.
             try:
@@ -125,10 +129,15 @@ async def on_message(message):
                 await message.author.send(f'You have been warned in **"{message.guild.name}"** \n \n **Reason:** {warn_reason}')
             except Exception as e:
                 print(f"An error occurred: {e}")
+        else:
+            offensive_msg = False
     except Exception as e:
         print(f"An error occurred: {e}")
 
-    await bot.process_commands(message)  # Make sure to call this to process commands
+    if offensive_msg == False and is_mal == "OK"
+        await bot.process_commands(message)  # Make sure to call this to process commands
+    else:
+        return
 
 @bot.command(name='meme', description="Sends a random meme from reddit.")
 async def meme(ctx):
