@@ -34,18 +34,21 @@ async def on_mal_msg(message):
     await message.author.send(f'You have been warned in **"{message.guild.name}"** \n \n **Reason:** {warn_reason}')
 
 async def on_safe_msg(message):
-    safe_embed = discord.Embed(
-        description=f'The above posted link was ***not*** flagged as malicious and is safe to click.',
-        color=discord.Color.red())
-    await message.channel.send(embed=safe_embed)
+    return
 
 async def sanitize_urls(msg):
 
-    # regex for urls
-    url_re = r'(?:https?://|www\.)\S+'
+    try:
+        # regex for urls
+        url_re = r'(?:https?://|www\.)\S+'
 
-    # list for all urls in msg
-    urls = re.findall(url_re, msg)
+        # list for all urls in msg
+        urls = re.findall(url_re, msg)
+
+        # print the list of urls for console logging
+        print(f'Received these urls: {urls}')
+    except Exception as e:
+        print(f'An error has occurred: {e}')
 
     # if urls is empty, we can return the original msg, otherwise we continue and
     # check if the urls are malicious
@@ -57,25 +60,33 @@ async def sanitize_urls(msg):
         # unquote the url to get rid of any obfuscation that may or may not be present
         url = unquote(url)
 
-        # encode url in base64 and send to VirusTotal API for threat detection
-        url_id = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
-        vt_url = ('https://www.virustotal.com/api/v3/urls/' + url_id)
+        try:
+            # encode url in base64 and send to VirusTotal API for threat detection
+            url_id = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
+            vt_url = ('https://www.virustotal.com/api/v3/urls/' + url_id)
+            print(f'received this url for review: {url}')
 
-        headers = {
-            "accept": "application/json",
-            'x-apikey': VIRUSTOTAL_API_KEY,
-        }
+            headers = {
+                "accept": "application/json",
+                'x-apikey': VIRUSTOTAL_API_KEY,
+            }
 
-        response = requests.get(vt_url, headers=headers)
-        result = response.json()
+            response = requests.get(vt_url, headers=headers)
+            result = response.json()
+        except Exception as e:
+            print(f'An error has occured: {e}')
 
         # check if the result flagged the url, and if it did, return error msg
         if 'data' in result:
             if result['data']['attributes']['last_analysis_stats']['malicious'] > 0:
+                print(f'{url} was deemed malicious by VirusTotal')
                 guild = msg.guild
                 if guild:
                     return 'ERR'
-                else: continue
+                else:
+                    print(f'error getting server.')
+            else:
+                continue
 
         # if we get to this point, we know that all the urls passed the VirusTotal scan,
         # and we can deem the msg safe
