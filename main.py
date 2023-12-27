@@ -155,10 +155,10 @@ async def setup(ctx):
         else:
             await send_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
 
-@bot.tree.command(name='ping', description="Sends the bot's latency.", interaction: discord.Interaction)
+@bot.tree.command(name='ping', description="Sends the bot's latency.")
 async def ping(ctx):
     latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
-    await interaction.response.send_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
+    await send_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
 
 #@bot.command(name='ping', description="Sends the bot's latency.")
 #async def ping(ctx):
