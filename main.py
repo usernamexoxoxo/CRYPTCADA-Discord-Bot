@@ -85,7 +85,7 @@ async def on_message(message):
     # if the url/s is safe, we send the msg to the chat
     # otherwise, we warn the sender, log the event, and delete the msg
     if is_mal == "OK":
-        return
+        print(f'returned safe')
     elif is_mal == "ERR":
         on_mal_msg(message)
 
