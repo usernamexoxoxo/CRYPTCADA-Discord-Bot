@@ -82,12 +82,12 @@ async def on_message(message):
     # check if the msg contains a url/s, and if it does, if it/they are malicious
     is_mal = await sanitize_urls(message)
 
-    # if the url/s is safe, we send the msg to the chat
-    # otherwise, we warn the sender, log the event, and delete the msg
+    # if the url/s is safe, we resume safely.
+    # otherwise, we warn the sender, log the event, and delete the message
     if is_mal == "OK":
         print(f'returned safe')
     elif is_mal == "ERR":
-        on_mal_msg(message)
+        await on_mal_msg(message)
 
     # Delete messages that include bad words from a wordlist
     try:
