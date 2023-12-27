@@ -44,6 +44,8 @@ intents = discord.Intents.all()
 # Initialize Discord bot
 bot = commands.Bot(command_prefix='%', intents=intents)
 
+tree = discord.app_commands.CommandTree(client)
+
 # Initialize PRAW (Reddit API) client
 reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
                      client_secret = REDDIT_CLIENT_SECRET,
@@ -155,10 +157,15 @@ async def setup(ctx):
         else:
             await send_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
 
-@bot.command(name='ping', description="Sends the bot's latency.")
+@tree.command(name='ping', description="Sends the bot's latency.", interaction=discord.Interaction)
 async def ping(ctx):
     latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
-    await send_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
+    await interaction.response.send_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
+
+#@bot.command(name='ping', description="Sends the bot's latency.")
+#async def ping(ctx):
+#    latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
+#    await send_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
 
 @bot.command(name='meme', description="Sends a random meme from reddit.")
 async def meme(ctx):
