@@ -217,7 +217,7 @@ async def search_reddit(ctx, query):
                 created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
 
                 # Add a link to the original post and mention the subreddit
-                original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.url})"
+                original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.shortlink})"
 
                 # set the discord embed
                 embed = discord.Embed(color=discord.Color.red())
@@ -226,10 +226,14 @@ async def search_reddit(ctx, query):
                 embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
 
                 # Add the post's title
-                embed.description = f'{post.title} \n {original_post_link}'
+                embed.description = f'{post.title} \n {original_post_link} \n '
 
-                # Add the image or video
-                embed.set_image(url=post.url)
+                # Add the image to the embed
+                if post.media.get("type") == "image":
+                    embed.set_image(url=post.url)
+                # If there is no image in the post, add the description instead
+                else:
+                    embed.description += f'{post.description}'
 
                 # Display the time when it was posted
                 embed.timestamp = created_time
