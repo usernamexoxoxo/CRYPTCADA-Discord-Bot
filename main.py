@@ -43,8 +43,7 @@ intents = discord.Intents.all()
 
 # Initialize Discord bot
 bot = commands.Bot(command_prefix='%', intents=intents)
-client = aclient()
-tree = discord.app_commands.CommandTree(client)
+tree = discord.app_commands.CommandTree(bot)
 
 # Initialize PRAW (Reddit API) client
 reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
