@@ -50,43 +50,42 @@ async def sanitize_urls(msg):
         if not urls:
             return "OK"
 
+        for url in urls:
+
+            # unquote the url to get rid of any obfuscation that may or may not be present
+            url = unquote(url)
+
+            try:
+                # encode url in base64 and send to VirusTotal API for threat detection
+                url_id = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
+                vt_url = ('https://www.virustotal.com/api/v3/urls/' + url_id)
+                print(f'received this url for review: {url}')
+
+                headers = {
+                    "accept": "application/json",
+                    'x-apikey': VIRUSTOTAL_API_KEY,
+                }
+
+                response = requests.get(vt_url, headers=headers)
+                result = response.json()
+            except Exception as e:
+                print(f'An error has occured: {e}')
+
+            # check if the result flagged the url, and if it did, return error msg
+            if 'data' in result:
+                if result['data']['attributes']['last_analysis_stats']['malicious'] > 0:
+                    print(f'{url} was deemed malicious by VirusTotal')
+                    guild = msg.guild
+                    if guild:
+                        return 'ERR'
+                    else:
+                        print(f'error getting server.')
+                else:
+                    continue
+
+            # if we get to this point, we know that all the urls passed the VirusTotal scan,
+            # and we can deem the msg safe
+
+            return "OK"
     except Exception as e:
         print(f'An error has occurred: {e}')
-
-    for url in urls:
-
-        # unquote the url to get rid of any obfuscation that may or may not be present
-        url = unquote(url)
-
-        try:
-            # encode url in base64 and send to VirusTotal API for threat detection
-            url_id = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
-            vt_url = ('https://www.virustotal.com/api/v3/urls/' + url_id)
-            print(f'received this url for review: {url}')
-
-            headers = {
-                "accept": "application/json",
-                'x-apikey': VIRUSTOTAL_API_KEY,
-            }
-
-            response = requests.get(vt_url, headers=headers)
-            result = response.json()
-        except Exception as e:
-            print(f'An error has occured: {e}')
-
-        # check if the result flagged the url, and if it did, return error msg
-        if 'data' in result:
-            if result['data']['attributes']['last_analysis_stats']['malicious'] > 0:
-                print(f'{url} was deemed malicious by VirusTotal')
-                guild = msg.guild
-                if guild:
-                    return 'ERR'
-                else:
-                    print(f'error getting server.')
-            else:
-                continue
-
-        # if we get to this point, we know that all the urls passed the VirusTotal scan,
-        # and we can deem the msg safe
-
-        return "OK"
