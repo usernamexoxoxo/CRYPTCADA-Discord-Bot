@@ -186,7 +186,7 @@ async def search_reddit(ctx, query):
         # Initialize an empty list to store posts with images
         posts_with_images = []
         # Initialize an empty list to store already seen posts
-        displayed_posts = ()
+        displayed_posts = []
 
         print(f'%search_reddit command ran with query: {query}')
 
@@ -249,7 +249,7 @@ async def search_reddit(ctx, query):
                 # Make sure no discord invites are in the post and then send it.
                 if f'discord' not in post.url:
                     # Add the post ID to the set of displayed posts
-                    displayed_posts.add(post.id)
+                    displayed_posts.append(post.id)
                     await ctx.send(embed=embed)
 
         # Send the posts
