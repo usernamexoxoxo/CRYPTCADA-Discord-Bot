@@ -23,8 +23,8 @@ Welcome to the CRYPTCADA Discord Bot, created by GAZE aka UzerZero! CRYPTCADA is
 
 ## Setup
 
-[Invite CRYPTCADA to *your* server!](https://discord.com/api/oauth2/authorize?client_id=1158761436001091595&permissions=8&scope=bot+applications.commands)
-To set up the CRYPTCADA channels and log category, simply use the `/setup` command. Make sure you have administrative permissions in the server.
+[Invite CRYPTCADA to *your* server.](https://discord.com/api/oauth2/authorize?client_id=1158761436001091595&permissions=8&scope=bot+applications.commands)
+once the bot is in your server you can simply use `/setup` command to set up the CRYPTCADA channels and log category, this command does require administrative permissions in the server.
 
 ## Commands
 
