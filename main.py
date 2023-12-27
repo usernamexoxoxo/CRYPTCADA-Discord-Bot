@@ -229,7 +229,8 @@ async def search_reddit(ctx, query):
                 embed.description = f'{post.title} \n {original_post_link} \n '
 
                 # Add the image to the embed
-                if post.media.get("type") == "image":
+                media_type = getattr(post.media, "type", None)
+                if media_type == "image":
                     embed.set_image(url=post.url)
                 # If there is no image in the post, add the description instead
                 else:
