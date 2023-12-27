@@ -220,7 +220,7 @@ async def search_reddit(ctx, query):
                 embed.description = f'{post.title} \n {original_post_link}'
 
                 # Add the image or video
-                if post.media.get("type") == "image"
+                if post.media.get("type") == "image":
                     embed.set_image(url=post.url)
                 elif post.media.get("type") == "video":
                     embed.set_image(url=post.media["reddit_video"]["fallback_url"])
