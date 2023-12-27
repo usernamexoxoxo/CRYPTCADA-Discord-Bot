@@ -155,10 +155,19 @@ async def meme(ctx):
             created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
 
             embed = discord.Embed(color=discord.Color.red())
-            embed.set_image(url=post.url)  # Display the image or video
-            embed.set_author(name=post.author.name, icon_url=post.author.icon_img)  # Display the author's name and profile image
-            embed.timestamp = created_time  # Display the time when it was posted
-            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{selected_subreddit}]({post.url})", inline=False)  # Add a link to the original post and mention the subreddit
+
+            # Add a link to the original post and mention the subreddit
+            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{selected_subreddit}]({post.url})", inline=False)
+
+            # Add the author's name and profile image
+            embed.set_author(name=post.author.name, icon_url=post.author.icon_img)
+
+            # Display the image or video
+            embed.set_image(url=post.url)
+
+            # Display the time when it was posted
+            embed.timestamp = created_time
+
             await ctx.send(embed=embed)
         else:
             await send_embed_message(ctx, f"No memes found in /r/{selected_subreddit}", discord.Color.red())
@@ -176,13 +185,24 @@ async def search_reddit(ctx, query):
             created_time = datetime.datetime.utcfromtimestamp(submission.created_utc)
 
             embed = discord.Embed(color=discord.Color.red())
-            embed.set_image(url=submission.url)  # Display the image or video
-            embed.set_author(name=submission.author.name, icon_url=submission.author.icon_img)  # Display the author's name and profile image
-            embed.timestamp = created_time  # Display the time when it was posted
-            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})", inline=False)  # Add a link to the original post and mention the subreddit
+
+            # Add a link to the original post and mention the subreddit
+            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})", inline=False)
+
+            # Add the author's name and profile image
+            embed.set_author(name=submission.author.name, icon_url=submission.author.icon_img)
+
+            # Add the post's selftext or description
+            embed.add_field(name="Selftext/Description", value=submission.selftext, inline=False)
+
+            # Add the image or video
+            embed.set_image(url=submission.url)
+
+            # Display the time when it was posted
+            embed.timestamp = created_time
 
             result_message += f"**{submission.title}**\n"
-            await ctx.send(embed=embed)
+            await ctx.send(result_message, embed=embed)
     except Exception as e:
         print(f"An error occurred: {e}")
 
