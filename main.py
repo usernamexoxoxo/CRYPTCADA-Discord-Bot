@@ -207,7 +207,7 @@ async def search_reddit(ctx, query):
             embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
 
             # Add the post's title
-            embed.description = f'{original_post_link} \n **{post.title}** \n '
+            embed.description = f'{original_post_link} \n **{post.title.strip("*")}** \n '
 
             # If there is a description, add it to the embed
             if post.selftext:
