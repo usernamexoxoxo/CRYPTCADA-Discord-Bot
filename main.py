@@ -15,6 +15,7 @@ import os
 import discord
 from discord.ext import commands
 from discord import app_commands
+from urllib.parse import urlparse, unquote
 import praw
 import openai
 import random
@@ -25,7 +26,7 @@ import subprocess
 import requests
 import base64
 from wordfilter import wordfilter
-from urllib.parse import urlparse, unquote
+from cc_utils import on_mal_msg, on_safe_msg, sanitize_urls
 from config import DISCORD_BOT_TOKEN, REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT, OPENAI_API_KEY, VIRUSTOTAL_API_KEY
 
 # Configure the logger
@@ -78,6 +79,16 @@ async def on_message(message):
 
     vt_url = None # Initialize vt_url variable
 
+    # check if the msg contains a url/s, and if it does, if it/they are malicious
+    is_mal = sanitize_urls(message)
+
+    # if the url/s is safe, we send the msg to the chat
+    # otherwise, we warn the sender, log the event, and delete the msg
+    if is_mal == "OK":
+        on_safe_msg(message)
+    elif is_mal == "ERR":
+        on_mal_msg(message)
+
     # Delete messages that include bad words from a wordlist
     try:
         # Check if any of the words are in the wordlist
@@ -114,108 +125,6 @@ async def on_message(message):
                 print(f"An error occurred: {e}")
     except Exception as e:
         print(f"An error occurred: {e}")
-
-    # Check if the message contains a url
-    if 'https://' in message.content or 'http://' in message.content or 'www.' in message.content:
-
-        # Print the message content
-        print(f"Message with link received: {message.content}")
-
-        # If there is a url, store the message right away.
-        stored_message = message.content
-
-        # Set up the unparsed_url variable
-        unparsed_url = message.content.split('https://')[-1].split('http://')[-1].split(' ')[0].split('/')[0]
-
-        # Parse the URL
-        parsed_url = urlparse(unparsed_url)
-
-        # Unquote the path and query components
-        unquoted_path = unquote(parsed_url.path)
-        unquoted_query = unquote(parsed_url.query)
-
-        # Compare the unquoted and original components
-        if unquoted_path != parsed_url.path or unquoted_query != parsed_url.query:
-            is_obfuscated = True  # Obfuscation detected
-        else:
-            is_obfuscated = False  # No obfuscation detected
-
-        if is_obfuscated == True:
-            # Decode the URL
-            decoded_url = unquote(unparsed_url)
-        else:
-            # Keep the URL as-is
-            decoded_url = unparsed_url
-
-        # Remove https:// and obfuscation
-        payload = {
-            "url": decoded_url.strip("(").strip(")").strip("`").strip("</a>").strip("<a href=").strip("<").strip(">").strip('"').strip("'").strip("[").strip("]")
-        }
-        print('payload: ', payload)
-
-        # Encode the url with base64
-        url_id = base64.urlsafe_b64encode(payload["url"].encode()).decode().strip("=")
-        print('url_id: ', url_id)
-
-        vt_url = ('https://www.virustotal.com/api/v3/urls/' + url_id)
-
-        headers = {
-            "accept": "application/json",
-            'x-apikey': VIRUSTOTAL_API_KEY,
-        }
-        print('headers: ', headers)
-
-        # Send a GET request to the VirusTotal API with the url
-        response = requests.get(vt_url, headers=headers)
-        print('response status_code: ', response.status_code)
-
-        result = response.json()
-
-        if 'data' in result:
-            # If the link was flagged as malicious, delete and log the message.
-            if result['data']['attributes']['last_analysis_stats']['malicious'] > 0:
-                guild = message.guild
-                if guild:
-                    try:
-                        # Set audit and warn reasons
-                        audit_reason = f'Posted a link that was flagged as malicious by the CRYPTCADA bot, the message has been deleted.'
-                        warn_reason = f'You posted a link that was flagged as malicious by the CRYPTCADA bot and it has been deleted, please refrain from posting malicious links in the server. \n \n *If you think this was a mistake, please open a ticket.*'
-                        await message.delete()
-
-                        # After deleting the message, send a message to the channel to let people know of the event.
-                        deleted_embed = discord.Embed(description=f'{message.author.mention} posted a link that was flagged as malicious, the message has been deleted. This event has been logged.', color=discord.Color.red())
-                        await message.channel.send(embed=deleted_embed)
-
-                        # Send a moderation log message to a moderation channel
-                        moderation_channel = discord.utils.get(message.guild.text_channels, name='cryptcada-logs')
-                        if moderation_channel:
-                            try:
-                                moderation_embed = discord.Embed(description=f'{message.author.mention} has been warned. \n \n **Reason:** \n {audit_reason} \n \n **Original message:** \n {message.author.mention}: "{stored_message}" ', color=discord.Color.red())
-                                await moderation_channel.send(embed=moderation_embed)
-                            except Exception as e:
-                                print(f"An error occurred: {e}")
-                        # If there is no moderation channel, tell the server to use the %setup command.
-                        else:
-                            nomod_embed = discord.Embed(description=f'Moderation log channel not found. Please set up the CRYPTCADA channels by running the %setup command.', color=discord.Color.red())
-                            await message.channel.send(embed=nomod_embed)
-                    except Exception as e:
-                        print(f"An error occurred: {e}")
-                    # Send a warning message to the user
-                    try:
-                        await message.author.send(f'You have been warned in **"{message.guild.name}"** \n \n **Reason:** {warn_reason}')
-                    except Exception as e:
-                        print(f"An error occurred: {e}")
-            # If the link was not flagged as malicious, let the users know it is a safe to use link.
-            else:
-                return
-        else:
-            await message.channel.send('Error scanning the URL.')
-    else:
-        return # If theres no link in the message, ignore it.
-
-    # Check if the message is from the bot itself
-    if message.author == bot.user:
-        return  # Ignore messages from the bot itself
 
 @bot.command(name='setup', description="Set up the CRYPTCADA category and log channel.")
 async def setup(ctx):
