@@ -233,8 +233,10 @@ async def search_reddit(ctx, query):
                 if media_type == "image":
                     embed.set_image(url=post.url)
                 # If there is no image in the post, add the description instead
+                if post.selftext:
+                    embed.description += f'{post.selftext}'
                 else:
-                    embed.description += f'{post.description}'
+                    continue
 
                 # Display the time when it was posted
                 embed.timestamp = created_time
