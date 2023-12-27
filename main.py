@@ -199,7 +199,7 @@ async def search_reddit(ctx, query):
         # Set has_ran value so the function doesn't loop infinitely
         has_ran = False
 
-        async def send_posts(ctx, new_posts):
+        async def send_posts(new_posts):
             for post in new_posts:
 
                 # Check the media type of the posts
