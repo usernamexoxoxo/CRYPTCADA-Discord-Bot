@@ -67,9 +67,6 @@ bot.remove_command('help')
 # List of meme subreddits
 meme_subreddits = ['memes', 'dankmemes', 'wholesomememes', 'ProgrammerHumor']
 
-# List of reddit posts
-displayed_posts = set()
-
 # Initialize offensive_msg and set it to False
 offensive_msg = False
 
@@ -188,10 +185,10 @@ async def search_reddit(ctx, query):
         search_results = reddit.subreddit("all").search(query, sort="new", limit=4)
         # Initialize an empty list to store posts with images
         posts_with_images = []
+        # Initialize an empty list to store already seen posts
+        displayed_posts = []
 
         print(f'%search_reddit command ran with query: {query}')
-
-        global displayed_posts
 
         # Fetch 50 posts based on the user's query
         search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
@@ -199,57 +196,58 @@ async def search_reddit(ctx, query):
         # Filter out posts that have already been displayed
         new_posts = [post for post in search_results if post.id not in displayed_posts][:4]
 
-        for post in new_posts:
+        async def send_posts():
+            for post in new_posts:
 
-            # Check the media type of the posts
-            media_type = getattr(post.media, "type", None)
-            print(f'post found: ""{post}"" with media type: {media_type}')
+                # Check the media type of the posts
+                media_type = getattr(post.media, "type", None)
+                print(f'post found: ""{post}"" with media type: {media_type}')
 
-            # Convert the created_utc timestamp to a datetime object
-            created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
+                # Convert the created_utc timestamp to a datetime object
+                created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
 
-            # Add a link to the original post and mention the subreddit
-            original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.shortlink})"
+                # Add a link to the original post and mention the subreddit
+                original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.shortlink})"
 
-            # set the discord embed
-            embed = discord.Embed(color=discord.Color.red())
+                # set the discord embed
+                embed = discord.Embed(color=discord.Color.red())
 
-            # Add the author's name and profile image
-            embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
+                # Add the author's name and profile image
+                embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
 
-            # Add the post's title
-            embed.description = f'{original_post_link} \n **{post.title.strip("*")}** \n '
+                # Add the post's title
+                embed.description = f'{original_post_link} \n **{post.title.strip("*")}** \n '
 
-            # If there is a description, add it to the embed
-            if post.selftext:
-                embed.description += f'*{post.selftext.strip("*")}*'
-            # If there is an image, add it to the embed
-            if media_type == "image":
-                embed.set_image(url=post.url)
-            # If there is a video, add it to the embed
-            if media_type == "video":
-                embed.set_image(url=post.url)
-            # If there is a youtube link in the post, add it to the embed
-            if f'youtube' in post.url or f'youtu.be' in post.url:
-                embed.description += f'\n<{post.url}>\n'
-                # Assuming the first image in the preview is the thumbnail
-                thumbnail_url = post.preview['images'][0]['source']['url']
-                # Set the image
-                embed.set_image(url=thumbnail_url)
-            elif hasattr(post, 'preview') and 'images' in post.preview:
-                # Assuming the first image in the preview is the thumbnail
-                thumbnail_url = post.preview['images'][0]['source']['url']
-                # Set the image
-                embed.set_image(url=thumbnail_url)
+                # If there is a description, add it to the embed
+                if post.selftext:
+                    embed.description += f'*{post.selftext.strip("*")}*'
+                # If there is an image, add it to the embed
+                if media_type == "image":
+                    embed.set_image(url=post.url)
+                # If there is a video, add it to the embed
+                if media_type == "video":
+                    embed.set_image(url=post.url)
+                # If there is a youtube link in the post, add it to the embed
+                if f'youtube' in post.url or f'youtu.be' in post.url:
+                    embed.description += f'\n<{post.url}>\n'
+                    # Assuming the first image in the preview is the thumbnail
+                    thumbnail_url = post.preview['images'][0]['source']['url']
+                    # Set the image
+                    embed.set_image(url=thumbnail_url)
+                elif hasattr(post, 'preview') and 'images' in post.preview:
+                    # Assuming the first image in the preview is the thumbnail
+                    thumbnail_url = post.preview['images'][0]['source']['url']
+                    # Set the image
+                    embed.set_image(url=thumbnail_url)
 
-            # Display the time when it was posted
-            embed.timestamp = created_time
+                # Display the time when it was posted
+                embed.timestamp = created_time
 
-            # Make sure no discord invites are in the post and then send it.
-            if f'discord' not in post.url:
-                # Add the post ID to the set of displayed posts
-                displayed_posts.add(post.id)
-                await ctx.send(embed=embed)
+                # Make sure no discord invites are in the post and then send it.
+                if f'discord' not in post.url:
+                    # Add the post ID to the set of displayed posts
+                    displayed_posts.add(post.id)
+                    await ctx.send(embed=embed)
 
         # Ask the user if they want to see more posts
         message = await ctx.send("Do you want to see more posts? React with ✅ for more or ❌ to stop.")
@@ -267,22 +265,8 @@ async def search_reddit(ctx, query):
 
                 # Check the user's reaction
                 if str(reaction.emoji) == '✅':
-                    # Fetch 50 more posts based on the user's query
-                    search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
-
-                    # Filter out posts that have already been displayed
                     new_posts = [post for post in search_results if post.id not in displayed_posts][:4]
-
-                    for post in new_posts:
-                        # ... (Your existing post processing logic)
-
-                        # Make sure no discord invites are in the post and then send it.
-                        if f'discord' not in post.url:
-                            await ctx.send(embed=embed)
-
-                            # Add the post ID to the set of displayed posts
-                            displayed_posts.add(post.id)
-
+                    send_posts()
                 elif str(reaction.emoji) == '❌':
                     await ctx.send("Stopping the display of more posts.")
                     break
