@@ -188,52 +188,45 @@ async def search_reddit(ctx, query):
 
         print(f'%search_reddit command ran with query: {query}')
 
-        # Send a "searching for posts..." message
-        search_message = await send_embed_message(ctx, f'searching for posts...', discord.Color.red())
-
         for post in search_results:
 
             # Check the media type of the posts
             media_type = getattr(post.media, "type", None)
             print(f'post found: {post}')
 
-            # Delete the "searching for posts..." message
-            await search_message.delete()
-            # Send the found reddit posts
-            for post in posts_with_images:
-                # Convert the created_utc timestamp to a datetime object
-                created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
+            # Convert the created_utc timestamp to a datetime object
+            created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
 
-                # Add a link to the original post and mention the subreddit
-                original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.shortlink})"
+            # Add a link to the original post and mention the subreddit
+            original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.shortlink})"
 
-                # set the discord embed
-                embed = discord.Embed(color=discord.Color.red())
+            # set the discord embed
+            embed = discord.Embed(color=discord.Color.red())
 
-                # Add the author's name and profile image
-                embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
+            # Add the author's name and profile image
+            embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
 
-                # Add the post's title
-                embed.description = f'{post.title} \n {original_post_link} \n '
+            # Add the post's title
+            embed.description = f'{post.title} \n {original_post_link} \n '
 
-                # If there is an image, add it to the embed
-                media_type = getattr(post.media, "type", None)
-                if media_type == "image":
-                    embed.set_image(url=post.url)
-                # If there is a video, add it to the embed
-                if media_type == "video":
-                    embed.description += f'\n<{post.url}>\n'
-                    embed.set_thumbnail(url=post.url)
-                # If there is a description, add it to the embed
-                if post.selftext:
-                    embed.description += f'{post.selftext}'
-                else:
-                    continue
+            # If there is an image, add it to the embed
+            media_type = getattr(post.media, "type", None)
+            if media_type == "image":
+                embed.set_image(url=post.url)
+            # If there is a video, add it to the embed
+            if media_type == "video":
+                embed.description += f'\n<{post.url}>\n'
+                embed.set_thumbnail(url=post.url)
+            # If there is a description, add it to the embed
+            if post.selftext:
+                embed.description += f'{post.selftext}'
+            else:
+                continue
 
-                # Display the time when it was posted
-                embed.timestamp = created_time
+            # Display the time when it was posted
+            embed.timestamp = created_time
 
-                await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
     except Exception as e:
         print(f"An error occurred: {e}")
 
