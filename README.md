@@ -49,6 +49,6 @@ Contributions are welcome! Feel free to submit pull requests or open issues.
 
 ## Credits
 
-- @LJ4 - Bug hunting and stress testing
-- @xoxoxo - Improved version of the URL scanning
-- @chiefu - Coding solutions
+- **"@LJ4"** - Bug hunting and stress testing.
+- **"@xoxoxo"** - Improved version of the URL scanning.
+- **"@chiefu"** - Coding solutions.
