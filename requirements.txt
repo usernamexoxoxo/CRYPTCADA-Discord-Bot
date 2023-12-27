@@ -1,0 +1,4 @@
+discord.py
+discord
+praw
+openai==0.28
