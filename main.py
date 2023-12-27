@@ -246,11 +246,17 @@ async def search_reddit(ctx, query):
                 # Display the time when it was posted
                 embed.timestamp = created_time
 
-                # Make sure no discord invites are in the post and then send it.
+                # Make sure no discord invites are in the post
                 if f'discord' not in post.url:
                     # Add the post ID to the set of displayed posts
                     displayed_posts.append(post.id)
+                    # Remove the post from the new_posts list
+                    new_posts.remove(post)
+                    # Send the post
                     await ctx.send(embed=embed)
+            if len(new_posts) == 0:
+                await send_embed_message(ctx, f'No more posts to display, please run the command again.', discord.Color.red())
+                break
 
         # Send the posts
         if has_ran == False:
