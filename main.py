@@ -130,40 +130,6 @@ async def on_message(message):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-@bot.command(name='setup', description="Set up the CRYPTCADA category and log channel.")
-async def setup(ctx):
-    # Check if setup has already been completed
-    cryptcada_category = discord.utils.get(ctx.guild.categories, name='Cryptcada')
-    cryptcada_logs_channel = discord.utils.get(ctx.guild.text_channels, name='cryptcada-logs')
-
-    if cryptcada_category and cryptcada_logs_channel:
-        await send_embed_message(ctx, 'Cryptcada channels and category have already been set up.', discord.Color.red())
-    else:
-        if ctx.message.author.guild_permissions.administrator:
-            try:
-                # Create Cryptcada category if not already existing
-                if not cryptcada_category:
-                    cryptcada_category = await ctx.guild.create_category('Cryptcada')
-
-                # Create Cryptcada-logs channel if not already existing
-                if not cryptcada_logs_channel:
-                    cryptcada_logs_channel = await ctx.guild.create_text_channel('cryptcada-logs', category=cryptcada_category)
-
-                # Set category permissions
-                await cryptcada_category.set_permissions(ctx.guild.default_role, read_messages=False)
-                await cryptcada_category.set_permissions(ctx.guild.me, read_messages=True)  # Allow the bot to read messages in the category
-
-                await send_embed_message(ctx, f'Cryptcada channels and category have been set up successfully.', discord.Color.red())
-            except Exception as e:
-                print(f"An error occurred: {e}")
-        else:
-            await send_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
-
-@bot.tree.command(name='ping', description="Sends the bot's latency.")
-async def ping(ctx: Interaction):
-    latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
-    await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
-
 @bot.command(name='meme', description="Sends a random meme from reddit.")
 async def meme(ctx):
     try:
@@ -340,6 +306,40 @@ async def translate(ctx, *, input_text):
     else:
         await send_embed_message(ctx, "Invalid input type. Use text, binary, hexadecimal or chill++.", discord.Color.red())
 
+@bot.tree.command(name='ping', description="Sends the bot's latency.")
+async def ping(ctx: Interaction):
+    latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
+    await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
+
+@bot.tree.command(name='setup', description="Set up the CRYPTCADA category and log channel.")
+async def setup(ctx: Interaction):
+    # Check if setup has already been completed
+    cryptcada_category = discord.utils.get(ctx.guild.categories, name='Cryptcada')
+    cryptcada_logs_channel = discord.utils.get(ctx.guild.text_channels, name='cryptcada-logs')
+
+    if not ctx.message.author.guild_permissions.administrator:
+        await slash_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
+    else:
+        if cryptcada_category and cryptcada_logs_channel:
+            await slash_embed_message(ctx, 'Cryptcada channels and category have already been set up.', discord.Color.red())
+        else:
+            try:
+                # Create Cryptcada category if not already existing
+                if not cryptcada_category:
+                    cryptcada_category = await ctx.guild.create_category('Cryptcada')
+
+                # Create Cryptcada-logs channel if not already existing
+                if not cryptcada_logs_channel:
+                    cryptcada_logs_channel = await ctx.guild.create_text_channel('cryptcada-logs', category=cryptcada_category)
+
+                # Set category permissions
+                await cryptcada_category.set_permissions(ctx.guild.default_role, read_messages=False)
+                await cryptcada_category.set_permissions(ctx.guild.me, read_messages=True)  # Allow the bot to read messages in the category
+
+                await slash_embed_message(ctx, f'Cryptcada channels and category have been set up successfully.', discord.Color.red())
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
 @bot.tree.command(name='help', description="Tells you all the available commands.")
 async def help(ctx: Interaction):
     # Define a dictionary of commands and their explanations with formatting
@@ -351,7 +351,7 @@ async def help(ctx: Interaction):
         '**%search_reddit  < query >**':  'Search Reddit for posts based on a query.',
         '**%translate  < Text to translate >**':  'Translate between text, binary, hexadecimal and chill++.',
         '**%lincom  < command name >**':  'Get a command explanation from ChatGPT.',
-        '**%setup**':  'Set up the CRYPTCADA log channel. (Admin permissions required)',
+        '**/setup**':  'Set up the CRYPTCADA log channel. (Admin permissions required)',
         '**/ping**':  'Tells you the bots latency.',
         '**/help**':  'Show this help message.'
     }
