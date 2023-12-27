@@ -152,25 +152,25 @@ async def meme(ctx):
 
         if post:
             # Convert the created_utc timestamp to a datetime object
-            created_time = datetime.datetime.utcfromtimestamp(submission.created_utc)
+            created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
 
+            # Add a link to the original post and mention the subreddit
+            original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.url})"
+
+            # set the discord embed
             embed = discord.Embed(color=discord.Color.red())
 
             # Add the author's name and profile image
-            embed.set_author(name=submission.author.name, icon_url=submission.author.icon_img)
+            embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
 
             # Add the post's title
-            embed.description = submission.title
+            embed.description = f'{post.title} \n {original_post_link}'
 
             # Add the image or video
-            embed.set_image(url=submission.url)
-
-            # Add a link to the original post and mention the subreddit as a footer
-            original_post_link = f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})"
-            embed.set_footer(text=original_post_link)
+            embed.set_image(url=post.url)
 
             # Display the time when it was posted
-            embed.timestamp = created_time
+            embed.timestamp = f'Post created on: {created_time}'
 
             await ctx.send(embed=embed)
         else:
@@ -183,27 +183,27 @@ async def search_reddit(ctx, query):
     try:
         # Search Reddit for posts based on a query
         search_results = reddit.subreddit("all").search(query, limit=5)
-        for submission in search_results:
+        for post in search_results:
             # Convert the created_utc timestamp to a datetime object
-            created_time = datetime.datetime.utcfromtimestamp(submission.created_utc)
+            created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
 
+            # Add a link to the original post and mention the subreddit
+            original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.url})"
+
+            # set the discord embed
             embed = discord.Embed(color=discord.Color.red())
 
             # Add the author's name and profile image
-            embed.set_author(name=submission.author.name, icon_url=submission.author.icon_img)
+            embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
 
             # Add the post's title
-            embed.description = submission.title
+            embed.description = f'{post.title} \n {original_post_link}'
 
             # Add the image or video
-            embed.set_image(url=submission.url)
-
-            # Add a link to the original post and mention the subreddit as a footer
-            original_post_link = f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})"
-            embed.set_footer(text=original_post_link)
+            embed.set_image(url=post.url)
 
             # Display the time when it was posted
-            embed.timestamp = created_time
+            embed.timestamp = f'Post created on: {created_time}'
 
             await ctx.send(embed=embed)
     except Exception as e:
