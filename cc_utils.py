@@ -56,7 +56,7 @@ async def sanitize_urls(message):
         for url in urls:
 
             # unquote the url to get rid of any obfuscation that may or may not be present
-            url = unquote(url)
+            url = unquote(url).strip("(").strip(")").strip("`").strip("</a>").strip("<a href=").strip("<").strip(">").strip('"').strip("'").strip("[").strip("]")
 
             try:
                 # encode url in base64 and send to VirusTotal API for threat detection
