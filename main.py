@@ -1,4 +1,4 @@
-# CRYPTCADA by: GAZE | UzerZero
+# CRYPTCADA by: GAZE | UzerZero In collaboration with Chiefu and xoxoxo
 
 #    $$$$$$\  $$$$$$$\ $$\     $$\ $$$$$$$\ $$$$$$$$\  $$$$$$\   $$$$$$\  $$$$$$$\   $$$$$$\
 #   $$  __$$\ $$  __$$\\$$\   $$  |$$  __$$\\__$$  __|$$  __$$\ $$  __$$\ $$  __$$\ $$  __$$\
