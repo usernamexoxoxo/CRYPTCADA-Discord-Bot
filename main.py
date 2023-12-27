@@ -159,14 +159,15 @@ async def meme(ctx):
             # Add the author's name and profile image
             embed.set_author(name=submission.author.name, icon_url=submission.author.icon_img)
 
-            # Add the post's title (moved up)
-            embed.add_field(name="Title", value=submission.title, inline=False)
+            # Add the post's title
+            embed.description = submission.title
 
             # Add the image or video
             embed.set_image(url=submission.url)
 
-            # Add a link to the original post and mention the subreddit (now at the top)
-            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})", inline=False)
+            # Add a link to the original post and mention the subreddit as a footer
+            original_post_link = f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})"
+            embed.set_footer(text=original_post_link)
 
             # Display the time when it was posted
             embed.timestamp = created_time
@@ -191,14 +192,15 @@ async def search_reddit(ctx, query):
             # Add the author's name and profile image
             embed.set_author(name=submission.author.name, icon_url=submission.author.icon_img)
 
-            # Add the post's title (moved up)
-            embed.add_field(name="Title", value=submission.title, inline=False)
+            # Add the post's title
+            embed.description = submission.title
 
             # Add the image or video
             embed.set_image(url=submission.url)
 
-            # Add a link to the original post and mention the subreddit (now at the top)
-            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})", inline=False)
+            # Add a link to the original post and mention the subreddit as a footer
+            original_post_link = f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})"
+            embed.set_footer(text=original_post_link)
 
             # Display the time when it was posted
             embed.timestamp = created_time
