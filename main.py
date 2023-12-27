@@ -196,29 +196,33 @@ async def search_reddit(ctx, query):
                 if len(posts_with_images) == 3:
                     break
 
-        for post in posts_with_images:
-            # Convert the created_utc timestamp to a datetime object
-            created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
+        if not posts_with_images:
+            # If no posts with images were found, inform the user
+            await send_embed_message(ctx, f"No posts were found for that query.", discord.Color.red())
+        else:
+            for post in posts_with_images:
+                # Convert the created_utc timestamp to a datetime object
+                created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
 
-            # Add a link to the original post and mention the subreddit
-            original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.url})"
+                # Add a link to the original post and mention the subreddit
+                original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.url})"
 
-            # set the discord embed
-            embed = discord.Embed(color=discord.Color.red())
+                # set the discord embed
+                embed = discord.Embed(color=discord.Color.red())
 
-            # Add the author's name and profile image
-            embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
+                # Add the author's name and profile image
+                embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
 
-            # Add the post's title
-            embed.description = f'{post.title} \n {original_post_link}'
+                # Add the post's title
+                embed.description = f'{post.title} \n {original_post_link}'
 
-            # Add the image or video
-            embed.set_image(url=post.url)
+                # Add the image or video
+                embed.set_image(url=post.url)
 
-            # Display the time when it was posted
-            embed.timestamp = created_time
+                # Display the time when it was posted
+                embed.timestamp = created_time
 
-            await ctx.send(embed=embed)
+                await ctx.send(embed=embed)
     except Exception as e:
         print(f"An error occurred: {e}")
 
