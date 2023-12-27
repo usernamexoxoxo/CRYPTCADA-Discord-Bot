@@ -223,7 +223,12 @@ async def search_reddit(ctx, query):
                 embed.description += f'\n<{post.url}>\n'
                 # Assuming the first image in the preview is the thumbnail
                 thumbnail_url = post.preview['images'][0]['source']['url']
-                # Set the thumbnail
+                # Set the image
+                embed.set_image(url=thumbnail_url)
+            elif hasattr(post, 'preview') and 'images' in post.preview:
+                # Assuming the first image in the preview is the thumbnail
+                thumbnail_url = post.preview['images'][0]['source']['url']
+                # Set the image
                 embed.set_image(url=thumbnail_url)
 
             # Display the time when it was posted
