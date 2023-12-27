@@ -120,7 +120,7 @@ async def on_message(message):
                         print(f"An error occurred: {e}")
                 # If there is no moderation channel, tell the server to use the %setup command.
                 else:
-                    nomod_embed = discord.Embed(description=f'Moderation log channel not found. Please set up the CRYPTCADA channels by running the %setup command.', color=discord.Color.red())
+                    nomod_embed = discord.Embed(description=f'Moderation log channel not found. Please set up the CRYPTCADA channels by running the /setup command.', color=discord.Color.red())
                     await message.channel.send(embed=nomod_embed)
             except Exception as e:
                 print(f"An error occurred: {e}")
@@ -134,8 +134,9 @@ async def on_message(message):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-    if offensive_msg == False and is_mal == "OK":
-        await bot.process_commands(message)  # Make sure to call this to process commands
+    # Only let users call commands if the message doesn't contain a dangerous url or offensive words.
+    if offensive_msg == False and is_mal != "ERR":
+        await bot.process_commands(message)  # Process commands
     else:
         return
 
