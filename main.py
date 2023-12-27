@@ -181,17 +181,13 @@ async def meme(ctx):
 @bot.command(name='search_reddit', description="Search reddit based on a query.")
 async def search_reddit(ctx, query):
     try:
-        # Search Reddit for posts based on a query
-        search_results = reddit.subreddit("all").search(query, sort="new", limit=4)
-        # Initialize an empty list to store posts with images
-        posts_with_images = []
-        # Initialize an empty list to store already seen posts
-        displayed_posts = []
-
         print(f'%search_reddit command ran with query: {query}')
 
         # Fetch 50 posts based on the user's query
         search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
+
+        # Initialize an empty list to store already seen posts
+        displayed_posts = []
 
         # Filter out posts that have already been displayed
         new_posts = [post for post in search_results if post.id not in displayed_posts][:3]
@@ -254,6 +250,7 @@ async def search_reddit(ctx, query):
                     new_posts.remove(post)
                     # Send the post
                     await ctx.send(embed=embed)
+
             if len(new_posts) == 0:
                 await send_embed_message(ctx, f'No more posts to display, please run the command again.', discord.Color.red())
                 return
