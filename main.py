@@ -152,18 +152,21 @@ async def meme(ctx):
 
         if post:
             # Convert the created_utc timestamp to a datetime object
-            created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
+            created_time = datetime.datetime.utcfromtimestamp(submission.created_utc)
 
             embed = discord.Embed(color=discord.Color.red())
 
-            # Add a link to the original post and mention the subreddit
-            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{selected_subreddit}]({post.url})", inline=False)
-
             # Add the author's name and profile image
-            embed.set_author(name=post.author.name, icon_url=post.author.icon_img)
+            embed.set_author(name=submission.author.name, icon_url=submission.author.icon_img)
 
-            # Display the image or video
-            embed.set_image(url=post.url)
+            # Add the post's title (moved up)
+            embed.add_field(name="Title", value=submission.title, inline=False)
+
+            # Add the image or video
+            embed.set_image(url=submission.url)
+
+            # Add a link to the original post and mention the subreddit (now at the top)
+            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})", inline=False)
 
             # Display the time when it was posted
             embed.timestamp = created_time
@@ -179,30 +182,28 @@ async def search_reddit(ctx, query):
     try:
         # Search Reddit for posts based on a query
         search_results = reddit.subreddit("all").search(query, limit=5)
-        result_message = "Search Results:\n"
         for submission in search_results:
             # Convert the created_utc timestamp to a datetime object
             created_time = datetime.datetime.utcfromtimestamp(submission.created_utc)
 
             embed = discord.Embed(color=discord.Color.red())
 
-            # Add a link to the original post and mention the subreddit
-            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})", inline=False)
-
             # Add the author's name and profile image
             embed.set_author(name=submission.author.name, icon_url=submission.author.icon_img)
 
-            # Add the post's selftext or description
-            embed.add_field(name="Selftext/Description", value=submission.selftext, inline=False)
+            # Add the post's title (moved up)
+            embed.add_field(name="Title", value=submission.title, inline=False)
 
             # Add the image or video
             embed.set_image(url=submission.url)
 
+            # Add a link to the original post and mention the subreddit (now at the top)
+            embed.add_field(name="Original Post", value=f"[View on Reddit in r/{submission.subreddit.display_name}]({submission.url})", inline=False)
+
             # Display the time when it was posted
             embed.timestamp = created_time
 
-            result_message += f"**{submission.title}**\n"
-            await ctx.send(result_message, embed=embed)
+            await ctx.send(embed=embed)
     except Exception as e:
         print(f"An error occurred: {e}")
 
