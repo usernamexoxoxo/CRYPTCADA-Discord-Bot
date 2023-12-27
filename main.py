@@ -190,7 +190,7 @@ async def search_reddit(ctx, query):
 
         for post in search_results:
             # Check if the post has media content
-            if post.media and (hasattr(post, 'preview') and 'images' in post.preview):
+            if post.media or (hasattr(post, 'preview') and 'images' in post.preview):
                 print(f'post with media found: {post}')
                 # Add the post to the list if it has images or videos
                 posts_with_images.append(post)
@@ -219,11 +219,13 @@ async def search_reddit(ctx, query):
                 # Add the post's title
                 embed.description = f'{post.title} \n {original_post_link}'
 
+                print(f'media type: {post.media.get("type")}')
+
                 # Add the image or video
                 if post.media.get("type") == "image":
                     embed.set_image(url=post.url)
                 elif post.media.get("type") == "video":
-                    embed.set_image(url=post.media["reddit_video"]["fallback_url"])
+                    embed.set_thumbnail(url=post.media["reddit_video"]["fallback_url"])
 
                 # Display the time when it was posted
                 embed.timestamp = created_time
