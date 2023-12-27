@@ -134,7 +134,7 @@ async def on_message(message):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-    if offensive_msg == False and is_mal == "OK"
+    if offensive_msg == False and is_mal == "OK":
         await bot.process_commands(message)  # Make sure to call this to process commands
     else:
         return
