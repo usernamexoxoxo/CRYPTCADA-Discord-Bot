@@ -443,7 +443,7 @@ async def ping(ctx: Interaction):
     await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
 
 @bot.tree.command(name='invite', description='Invite the bot to your own server!')
-async def prompt_more_two(ctx: Interaction):
+async def prompt_more_two(interaction):
     buttonInv = Button(label="Invite CRYPTCADA", style=discord.ButtonStyle.url)
 
     embed = discord.Embed(color=discord.Color.red())
