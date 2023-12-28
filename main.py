@@ -448,7 +448,7 @@ async def prompt_more_two(ctx: Interaction):
     view.add_item(buttonInv)
 
     # Sending the message with buttons
-    await button_embed_message(ctx, "", discord.Color.red(), view)
+    await button_embed_message(ctx, "Click the button to invite CRYPTCADA to your server!", discord.Color.red(), view)
 
 @bot.tree.command(name='setup', description="Set up the CRYPTCADA category and log channel.")
 async def setup(ctx: Interaction):
