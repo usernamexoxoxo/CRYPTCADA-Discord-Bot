@@ -297,12 +297,26 @@ async def search_reddit(ctx, query):
             embed = discord.Embed(color=discord.Color.red())
             embed.description = "Do you want to see more posts related to your query?"
 
+            async def buttonMore_callback(interaction):
+                await interaction.response.edit_message(content="Loading more posts!", view=None)
+                has_ran = True
+                new_posts.extend([post for post in search_results if post not in displayed_posts])
+                random_posts = random.sample(new_posts, 3)
+                await send_posts(random_posts)
+                await prompt_more_two()
+
+            async def buttonStop_callback(interaction):
+                await interaction.response.edit_message(content="Stopping the display of more posts.", view=None)
+
+            buttonMore.callback = buttonMore_callback
+            buttonStop.callback = buttonStop_callback
+
             view = View()
             view.add_item(buttonMore)
             view.add_item(buttonStop)
 
             # Sending the message with buttons
-            await ctx.send(embed=embed, view=view)
+            promptMessage = await ctx.send(embed=embed, view=view)
 
         # Send the posts
         if has_ran == False:
@@ -454,7 +468,7 @@ async def prompt_more_two(ctx: Interaction):
     view.add_item(buttonInv)
 
     # Sending the message with buttons
-    await button_embed_message(ctx, "Invite CRYPTCADA to your own server!", discord.Color.red(), view)
+    await button_embed_message(ctx, "", discord.Color.red(), view)
 
 @bot.tree.command(name='setup', description="Set up the CRYPTCADA category and log channel.")
 async def setup(ctx: Interaction):
