@@ -275,7 +275,7 @@ async def search_reddit(ctx, query):
         try:
             while True:
                 # Wait for the user's reaction
-                reaction, user = await bot.wait_for('reaction_add', check=check)
+                reaction, user = await bot.wait_for('reaction_add', check=check_reaction)
 
                 # Check the user's reaction
                 if reaction.emoji == "✅":
