@@ -288,7 +288,8 @@ async def search_reddit(ctx, query):
             buttonMore = Button(label="More posts", style=discord.ButtonStyle.green)
             buttonStop = Button(label="Stop searching", style=discord.ButtonStyle.red)
             view = View()
-            view.add_item(buttonMore, buttonStop)
+            view.add_item(buttonMore)
+            view.add_item(buttonStop)
             await send_embed_message(ctx, "Do you want to see more posts related to your query?", discord.Color.red(), view=view)
 
 
