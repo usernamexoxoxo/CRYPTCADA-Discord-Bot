@@ -261,7 +261,7 @@ async def search_reddit(ctx, query):
 
         # Send the posts
         if has_ran == False:
-            await send_posts(new_posts)
+            await send_posts(random_posts)
 
         # Ask the user if they want to see more posts
         message = await send_embed_message(ctx, f"Do you want to see more posts? React with ✅ for more or ❌ to stop.", discord.Color.red())
