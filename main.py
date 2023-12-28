@@ -264,9 +264,10 @@ async def search_reddit(ctx, query):
             await send_posts(random_posts)
 
         # Ask the user if they want to see more posts
-        message = await send_embed_message(ctx, f"Do you want to see more posts? React with ✅ for more or ❌ to stop.", discord.Color.red())
-        await message.add_reaction('✅')
-        await message.add_reaction('❌')
+        
+        #message = await send_embed_message(ctx, f"Do you want to see more posts? React with ✅ for more or ❌ to stop.", discord.Color.red())
+        #await message.add_reaction('✅')
+        #await message.add_reaction('❌')
 
         # Function to check user reaction
         def check_reaction(reaction, user):
