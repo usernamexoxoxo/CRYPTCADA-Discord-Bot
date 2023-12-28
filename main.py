@@ -290,7 +290,10 @@ async def search_reddit(ctx, query):
             view = View()
             view.add_item(buttonMore)
             view.add_item(buttonStop)
-            await send_embed_message(ctx, "Do you want to see more posts related to your query?", discord.Color.red(), view=view)
+            ActionRow=[view]
+            embed = discord.Embed(color=discord.Color.red())
+            embed.description = "Do you want to see more posts related to your query?"
+            promptMessage = await ctx.send(embed=embed, components=ActionRow)
 
 
         # Send the posts
