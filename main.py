@@ -294,7 +294,7 @@ async def search_reddit(ctx, query):
             # Adding buttons
             buttons = [buttonMore, buttonStop]
 
-            action_row = discord.ui.ActionRow(*buttons)
+            action_row = discord.ActionRow(*buttons)
 
             # Sending the message with buttons
             await ctx.send(embed=embed, components=[action_row])
