@@ -16,6 +16,7 @@ import discord
 from discord.ext import commands
 import discord.ui
 from discord.ui import Button
+from discord_components import DiscordComponents
 from discord import app_commands, Interaction, Embed, Color
 import pycord
 from urllib.parse import urlparse, unquote
@@ -46,6 +47,8 @@ intents = discord.Intents.all()
 
 # Initialize Discord bot
 bot = commands.Bot(command_prefix='%', intents=intents)
+
+DiscordComponents(bot)
 
 # Initialize PRAW (Reddit API) client
 reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
