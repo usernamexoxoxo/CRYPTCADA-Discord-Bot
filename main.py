@@ -272,19 +272,17 @@ async def search_reddit(ctx, query):
             embed.description = "Do you want to see more posts related to your query?"
 
             async def buttonMore_callback(self, interaction):
-                if interaction.user == self.ctx.author:
-                    await interaction.response.edit_message(view=None)
-                    await promptMessage.delete()
-                    has_ran = True
-                    new_posts.extend([post for post in search_results if post not in displayed_posts])
-                    random_posts = random.sample(new_posts, 3)
-                    await send_posts(random_posts)
-                    await prompt_more()
+                await interaction.response.edit_message(view=None)
+                await promptMessage.delete()
+                has_ran = True
+                new_posts.extend([post for post in search_results if post not in displayed_posts])
+                random_posts = random.sample(new_posts, 3)
+                await send_posts(random_posts)
+                await prompt_more()
 
             async def buttonStop_callback(self, interaction):
-                if interaction.user == self.ctx.author:
-                    await interaction.response.edit_message(view=None)
-                    await promptMessage.delete()
+                await interaction.response.edit_message(view=None)
+                await promptMessage.delete()
 
             async def on_timeout():
                 await interaction.response.edit_message(view=None)
