@@ -284,7 +284,7 @@ async def search_reddit(ctx, query):
                     await send_embed_message(ctx, f"Stopping the display of more posts.", discord.Color.red())
                     return
 
-        async def prompt_more_two(ctx):
+        async def prompt_more_two():
             buttonMore = Button(label="More posts", style=discord.ButtonStyle.green)
             buttonStop = Button(label="Stop searching", style=discord.ButtonStyle.red)
             view = View()
