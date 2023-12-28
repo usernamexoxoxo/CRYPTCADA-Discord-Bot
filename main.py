@@ -298,7 +298,8 @@ async def search_reddit(ctx, query):
             embed.description = "Do you want to see more posts related to your query?"
 
             async def buttonMore_callback(interaction):
-                await interaction.response.edit_message(content="Loading more posts!", view=None)
+                await interaction.response.edit_message(view=None)
+                await interaction.response.deleted_message
                 has_ran = True
                 new_posts.extend([post for post in search_results if post not in displayed_posts])
                 random_posts = random.sample(new_posts, 3)
@@ -306,7 +307,8 @@ async def search_reddit(ctx, query):
                 await prompt_more_two()
 
             async def buttonStop_callback(interaction):
-                await interaction.response.edit_message(content="Stopping the display of more posts.", view=None)
+                await interaction.response.edit_message(view=None)
+                await interaction.response.deleted_message
 
             buttonMore.callback = buttonMore_callback
             buttonStop.callback = buttonStop_callback
