@@ -15,8 +15,7 @@ import os
 import discord
 from discord.ext import commands
 import discord.ui
-from discord.ui import Button
-from discord_components import DiscordComponents
+from discord.ui import Button, View
 from discord import app_commands, Interaction, Embed, Color
 import pycord
 from urllib.parse import urlparse, unquote
@@ -47,8 +46,6 @@ intents = discord.Intents.all()
 
 # Initialize Discord bot
 bot = commands.Bot(command_prefix='%', intents=intents)
-
-DiscordComponents(bot)
 
 # Initialize PRAW (Reddit API) client
 reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
@@ -294,13 +291,13 @@ async def search_reddit(ctx, query):
 
             embed = discord.Embed(color=discord.Color.red())
             embed.description = "Do you want to see more posts related to your query?"
-            # Adding buttons
-            buttons = [buttonMore, buttonStop]
 
-            action_row = discord.ActionRow(*buttons)
+            view = View()
+            view.add_item(buttonMore)
+            view.add_item(buttonStop)
 
             # Sending the message with buttons
-            await ctx.send(embed=embed, components=[action_row])
+            await ctx.send(embed=embed, view=view)
 
         # Send the posts
         if has_ran == False:
