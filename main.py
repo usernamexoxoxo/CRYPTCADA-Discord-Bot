@@ -286,6 +286,9 @@ async def search_reddit(ctx, query):
                     return
 
         async def prompt_more_two():
+            buttonMore = Button(label="More posts", style=discord.ButtonStyle.green)
+            buttonStop = Button(label="Stop searching", style=discord.ButtonStyle.red)
+
             embed = discord.Embed(
                                 title="Do you want to see more posts?",
                                 description="Click one of the buttons below.",
