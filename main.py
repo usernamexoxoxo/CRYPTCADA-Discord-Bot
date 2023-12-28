@@ -14,6 +14,7 @@
 import os
 import discord
 from discord.ext import commands
+from discord.ui import Button, View
 from discord import app_commands, Interaction, Embed, Color
 from urllib.parse import urlparse, unquote
 import praw
@@ -283,10 +284,19 @@ async def search_reddit(ctx, query):
                     await send_embed_message(ctx, f"Stopping the display of more posts.", discord.Color.red())
                     return
 
+        async def prompt_more_two(ctx: commands.Context):
+            buttonMore = Button(label="More posts", style=discord.ButtonStyle.green)
+            buttonStop = Button(label="Stop searching", style=discord.ButtonStyle.red)
+            view = View()
+            view.add_item(buttonMore)
+            view.add_item(buttonStop)
+            await ctx.send("Do you want to see more posts related to your query?", view=view)
+
+
         # Send the posts
         if has_ran == False:
             await send_posts(random_posts)
-            await prompt_more()
+            await prompt_more_two()
 
     except Exception as e:
         print(f"An error occurred: {e}")
