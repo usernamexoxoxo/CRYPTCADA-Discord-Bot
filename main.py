@@ -190,7 +190,6 @@ async def search_reddit(ctx, query):
         # So that the send_posts function knows what posts not to send and what posts it has available to display
         displayed_posts = []
         new_posts = []
-        await load_posts()
 
         async def load_posts():
             # Filter out posts that have already been displayed
@@ -200,6 +199,8 @@ async def search_reddit(ctx, query):
 
         # Set has_ran value so the function doesn't loop infinitely
         has_ran = False
+
+        await load_posts()
 
         async def send_posts(random_posts):
             for post in random_posts:
