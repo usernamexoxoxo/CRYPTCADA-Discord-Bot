@@ -251,13 +251,7 @@ async def search_reddit(ctx, query):
                     await ctx.send(embed=embed)
                     # Add the post to the set of displayed posts
                     # So the bot knows not to display these posts anymore.
-                    displayed_posts.append(post)
-                    # Remove the post from the new_posts and random_posts list
-                    # So it doesn't send the same posts again in a loop.
-                    new_posts.remove(post)
-                    random_posts.remove(post)
-                    # log
-                    print(f'Displayed Posts: {displayed_posts} New Posts: {new_posts}')
+                    displayed_posts.extend(post)
                 else:
                     print(f'discord link in post {post}')
 
