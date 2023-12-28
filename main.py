@@ -449,7 +449,7 @@ async def ping(ctx: Interaction):
 
 @bot.tree.command(name='invite', description='Invite the bot to your own server!')
 async def prompt_more_two(ctx: Interaction):
-    buttonInv = Button(label="Invite CRYPTCADA", style=discord.ButtonStyle.url)
+    buttonInv = Button(label="Invite CRYPTCADA", url="https://discord.com/oauth2/authorize?client_id=1158761436001091595&permissions=8&scope=bot+applications.commands", style=discord.ButtonStyle.link)
     view = View()
     view.add_item(buttonInv)
 
