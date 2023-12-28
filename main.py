@@ -264,49 +264,29 @@ async def search_reddit(ctx, query):
                 await send_embed_message(ctx, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
                 return
 
-        # Ask the user if they want to see more posts
         async def prompt_more():
-            message = await send_embed_message(ctx, f"Do you want to see more posts? React with ✅ for more or ❌ to stop.", discord.Color.red())
-            await message.add_reaction('✅')
-            await message.add_reaction('❌')
-
-            # Function to check user reaction
-            def check_reaction(reaction, user):
-                return user == ctx.author and reaction.message == message and reaction.emoji in ["✅", "❌"]
-
-            while True:
-                # Wait for the user's reaction
-                reaction, user = await bot.wait_for('reaction_add', check=check_reaction)
-
-                # Check the user's reaction
-                if reaction.emoji == "✅":
-                    has_ran = True
-                    new_posts.extend([post for post in search_results if post not in displayed_posts])
-                    random_posts = random.sample(new_posts, 3)
-                    await send_posts(random_posts)
-                    await prompt_more()
-                elif reaction.emoji == "❌":
-                    has_ran = False
-                    await send_embed_message(ctx, f"Stopping the display of more posts.", discord.Color.red())
-                    return
-
-        async def prompt_more_two():
             buttonMore = Button(label="More posts", style=discord.ButtonStyle.green)
             buttonStop = Button(label="Stop searching", style=discord.ButtonStyle.red)
 
             embed = discord.Embed(color=discord.Color.red())
             embed.description = "Do you want to see more posts related to your query?"
 
-            async def buttonMore_callback(interaction):
-                await interaction.response.edit_message(view=None)
-                await promptMessage.delete()
-                has_ran = True
-                new_posts.extend([post for post in search_results if post not in displayed_posts])
-                random_posts = random.sample(new_posts, 3)
-                await send_posts(random_posts)
-                await prompt_more_two()
+            async def buttonMore_callback(self, interaction):
+                if interaction.user == self.ctx.author:
+                    await interaction.response.edit_message(view=None)
+                    await promptMessage.delete()
+                    has_ran = True
+                    new_posts.extend([post for post in search_results if post not in displayed_posts])
+                    random_posts = random.sample(new_posts, 3)
+                    await send_posts(random_posts)
+                    await prompt_more()
 
-            async def buttonStop_callback(interaction):
+            async def buttonStop_callback(self, interaction):
+                if interaction.user == self.ctx.author:
+                    await interaction.response.edit_message(view=None)
+                    await promptMessage.delete()
+
+            async def on_timeout():
                 await interaction.response.edit_message(view=None)
                 await promptMessage.delete()
 
@@ -318,12 +298,12 @@ async def search_reddit(ctx, query):
             view.add_item(buttonStop)
 
             # Sending the message with buttons
-            promptMessage = await ctx.send(embed=embed, view=view, ephemeral=True)
+            promptMessage = await ctx.send(embed=embed, view=view)
 
         # Send the posts
         if has_ran == False:
             await send_posts(random_posts)
-            await prompt_more_two()
+            await prompt_more()
 
     except Exception as e:
         print(f"An error occurred: {e}")
