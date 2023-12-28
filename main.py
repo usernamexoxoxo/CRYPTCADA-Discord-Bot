@@ -442,6 +442,19 @@ async def ping(ctx: Interaction):
     latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
     await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
 
+@bot.tree.command(name='invite', description='Invite the bot to your own server!')
+async def prompt_more_two(ctx: Interaction):
+    buttonInv = Button(label="Invite CRYPTCADA", style=discord.ButtonStyle.url)
+
+    embed = discord.Embed(color=discord.Color.red())
+    embed.description = "Invite CRYPTCADA to your own server!"
+
+    view = View()
+    view.add_item(buttonInv)
+
+    # Sending the message with buttons
+    await interaction.response.send_message(embed=embed, view=view)
+
 @bot.tree.command(name='setup', description="Set up the CRYPTCADA category and log channel.")
 async def setup(ctx: Interaction):
     # Check if setup has already been completed
