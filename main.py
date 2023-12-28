@@ -295,7 +295,6 @@ async def search_reddit(ctx, query):
             view.add_item(buttonMore)
             view.add_item(buttonStop)
 
-            # Sending the message with buttons
             promptMessage = await ctx.send(embed=embed, view=view)
 
         # Send the posts
@@ -446,9 +445,7 @@ async def prompt_more_two(ctx: Interaction):
     buttonInv = Button(label="Invite CRYPTCADA", url="https://discord.com/oauth2/authorize?client_id=1158761436001091595&permissions=8&scope=bot+applications.commands", style=discord.ButtonStyle.link)
     view = View()
     view.add_item(buttonInv)
-
-    # Sending the message with buttons
-    await button_embed_message(ctx, "Click the button to invite CRYPTCADA to your server!", discord.Color.red(), view)
+    await button_embed_message(ctx, "Click the button below to invite CRYPTCADA to your server!", discord.Color.red(), view)
 
 @bot.tree.command(name='setup', description="Set up the CRYPTCADA category and log channel.")
 async def setup(ctx: Interaction):
