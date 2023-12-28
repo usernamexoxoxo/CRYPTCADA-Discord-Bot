@@ -249,7 +249,6 @@ async def search_reddit(ctx, query):
                     # Add the post to the set of displayed posts
                     # So the bot knows not to display these posts anymore.
                     displayed_posts.append(post)
-                    continue
                 else:
                     print(f'discord link in post {post}')
 
@@ -260,8 +259,6 @@ async def search_reddit(ctx, query):
         # Send the posts
         if has_ran == False:
             await send_posts(random_posts)
-
-        await prompt_more()
 
         # Ask the user if they want to see more posts
         async def prompt_more():
@@ -283,7 +280,7 @@ async def search_reddit(ctx, query):
                     new_posts.extend([post for post in search_results if post not in displayed_posts and not in new_posts])
                     random_posts = random.sample(new_posts, 3)
                     await send_posts(random_posts)
-                    return
+                    await prompt_more()
                 elif reaction.emoji == "❌":
                     has_ran = False
                     await send_embed_message(ctx, f"Stopping the display of more posts.", discord.Color.red())
