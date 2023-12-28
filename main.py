@@ -259,6 +259,7 @@ async def search_reddit(ctx, query):
         # Send the posts
         if has_ran == False:
             await send_posts(random_posts)
+            await prompt_more()
 
         # Ask the user if they want to see more posts
         async def prompt_more():
