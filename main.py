@@ -453,7 +453,7 @@ async def prompt_more_two(ctx: Interaction):
     view.add_item(buttonInv)
 
     # Sending the message with buttons
-    await interaction.response.send_message(embed=embed, view=view)
+    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 @bot.tree.command(name='setup', description="Set up the CRYPTCADA category and log channel.")
 async def setup(ctx: Interaction):
@@ -497,6 +497,7 @@ async def help(ctx: Interaction):
         '**%lincom  < command name >**':  'Get a command explanation from ChatGPT.',
         '**/setup**':  'Set up the CRYPTCADA log channel. (Admin permissions required)',
         '**/ping**':  'Tells you the bots latency.',
+        '**/invite**':  'Invite the bot to your own server.',
         '**/help**':  'Show this help message.'
     }
 
