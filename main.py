@@ -64,6 +64,11 @@ async def slash_embed_message(interaction, content: str, color: Color):
     embed = Embed(description=content, color=color)
     await interaction.response.send_message(embed=embed)
 
+async def button_embed_message(interaction, content: str, color: Color, view):
+    embed = Embed(description=content, color=color)
+    view = view
+    await interaction.response.send_message(embed=embed, view=view)
+
 # Unregister the default 'help' command
 bot.remove_command('help')
 
@@ -443,17 +448,13 @@ async def ping(ctx: Interaction):
     await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
 
 @bot.tree.command(name='invite', description='Invite the bot to your own server!')
-async def prompt_more_two(interaction):
+async def prompt_more_two(ctx: Interaction):
     buttonInv = Button(label="Invite CRYPTCADA", style=discord.ButtonStyle.url)
-
-    embed = discord.Embed(color=discord.Color.red())
-    embed.description = "Invite CRYPTCADA to your own server!"
-
     view = View()
     view.add_item(buttonInv)
 
     # Sending the message with buttons
-    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+    await button_embed_message(ctx, "Invite CRYPTCADA to your own server!", discord.Color.red(), view)
 
 @bot.tree.command(name='setup', description="Set up the CRYPTCADA category and log channel.")
 async def setup(ctx: Interaction):
