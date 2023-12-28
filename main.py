@@ -256,11 +256,6 @@ async def search_reddit(ctx, query):
                 await send_embed_message(ctx, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
                 return
 
-        # Send the posts
-        if has_ran == False:
-            await send_posts(random_posts)
-            await prompt_more()
-
         # Ask the user if they want to see more posts
         async def prompt_more():
             message = await send_embed_message(ctx, f"Do you want to see more posts? React with ✅ for more or ❌ to stop.", discord.Color.red())
@@ -286,6 +281,11 @@ async def search_reddit(ctx, query):
                     has_ran = False
                     await send_embed_message(ctx, f"Stopping the display of more posts.", discord.Color.red())
                     return
+
+        # Send the posts
+        if has_ran == False:
+            await send_posts(random_posts)
+            await prompt_more()
 
     except Exception as e:
         print(f"An error occurred: {e}")
