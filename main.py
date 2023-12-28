@@ -286,17 +286,21 @@ async def search_reddit(ctx, query):
                     return
 
         async def prompt_more_two():
-            buttonMore = Button(label="More posts", style=discord.ButtonStyle.green)
-            buttonStop = Button(label="Stop searching", style=discord.ButtonStyle.red)
-            #view = View()
-            #view.add_item(buttonMore)
-            #view.add_item(buttonStop)
-            actionRow= discord.ActionRow(buttonMore,buttonStop)
-            components = discord.Component
-            embed = discord.Embed(color=discord.Color.red())
-            embed.description = "Do you want to see more posts related to your query?"
-            promptMessage = await ctx.send(embed=embed, components=actionRow)
+            embed = discord.Embed(
+                                title="Do you want to see more posts?",
+                                description="Click one of the buttons below.",
+                                color=discord.Color.blue()
+                                )
+            # Adding buttons
+            buttons = [
+                buttonMore,
+                buttonStop
+            ]
 
+            action_row = discord.ActionRow(*buttons)
+
+            # Sending the message with buttons
+            await ctx.send(embed=embed, components=[action_row])
 
         # Send the posts
         if has_ran == False:
