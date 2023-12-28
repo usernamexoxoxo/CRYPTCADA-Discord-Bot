@@ -318,7 +318,7 @@ async def search_reddit(ctx, query):
             view.add_item(buttonStop)
 
             # Sending the message with buttons
-            promptMessage = await ctx.send(embed=embed, view=view)
+            promptMessage = await ctx.send(embed=embed, view=view, ephemeral=True)
 
         # Send the posts
         if has_ran == False:
