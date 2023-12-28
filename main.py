@@ -190,10 +190,13 @@ async def search_reddit(ctx, query):
         # So that the send_posts function knows what posts not to send and what posts it has available to display
         displayed_posts = []
         new_posts = []
+        await load_posts()
 
-        # Filter out posts that have already been displayed
-        new_posts.extend([post for post in search_results if post not in displayed_posts])
-        random_posts = random.sample(new_posts, 3)
+        async def load_posts():
+            # Filter out posts that have already been displayed
+            new_posts.extend([post for post in search_results if post not in displayed_posts])
+            # Load 3 posts from new_posts so the send_posts function can send them
+            random_posts = random.sample(new_posts, 3)
 
         # Set has_ran value so the function doesn't loop infinitely
         has_ran = False
@@ -204,19 +207,14 @@ async def search_reddit(ctx, query):
                 # Check the media type of the posts
                 media_type = getattr(post.media, "type", None)
                 print(f'post found: ""{post}"" with media type: {media_type}')
-
                 # Convert the created_utc timestamp to a datetime object
                 created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
-
                 # Add a link to the original post and mention the subreddit
                 original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.shortlink})"
-
                 # set the discord embed
                 embed = discord.Embed(color=discord.Color.red())
-
                 # Add the author's name and profile image
                 embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
-
                 # Add the post's title
                 embed.description = f'{original_post_link} \n **{post.title.strip("*")}** \n '
 
@@ -263,17 +261,18 @@ async def search_reddit(ctx, query):
         if has_ran == False:
             await send_posts(random_posts)
 
+        await prompt_more()
+
         # Ask the user if they want to see more posts
-        
-        #message = await send_embed_message(ctx, f"Do you want to see more posts? React with ✅ for more or ❌ to stop.", discord.Color.red())
-        #await message.add_reaction('✅')
-        #await message.add_reaction('❌')
+        async def prompt_more():
+            message = await send_embed_message(ctx, f"Do you want to see more posts? React with ✅ for more or ❌ to stop.", discord.Color.red())
+            await message.add_reaction('✅')
+            await message.add_reaction('❌')
 
-        # Function to check user reaction
-        def check_reaction(reaction, user):
-            return user == ctx.author and reaction.message == message and reaction.emoji in ["✅", "❌"]
+            # Function to check user reaction
+            def check_reaction(reaction, user):
+                return user == ctx.author and reaction.message == message and reaction.emoji in ["✅", "❌"]
 
-        try:
             while True:
                 # Wait for the user's reaction
                 reaction, user = await bot.wait_for('reaction_add', check=check_reaction)
@@ -281,16 +280,13 @@ async def search_reddit(ctx, query):
                 # Check the user's reaction
                 if reaction.emoji == "✅":
                     has_ran = True
-                    new_posts.extend([post for post in search_results if post not in displayed_posts])
-                    random_posts = random.sample(new_posts, 3)
+                    await load_posts()
                     await send_posts(random_posts)
                     return
                 elif reaction.emoji == "❌":
                     has_ran = False
                     await send_embed_message(ctx, f"Stopping the display of more posts.", discord.Color.red())
                     return
-        except Exception as e:
-            print(f'An error occurred: {e}')
 
     except Exception as e:
         print(f"An error occurred: {e}")
