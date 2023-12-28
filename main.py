@@ -14,7 +14,7 @@
 import os
 import discord
 from discord.ext import commands
-from discord.ui import Button, View
+from discord.ui import Button
 from discord import app_commands, Interaction, Embed, Color
 import pycord
 from urllib.parse import urlparse, unquote
@@ -201,7 +201,6 @@ async def search_reddit(ctx, query):
         # Set has_ran value so the function doesn't loop infinitely
         has_ran = False
 
-
         async def send_posts(random_posts):
             for post in random_posts:
 
@@ -289,18 +288,12 @@ async def search_reddit(ctx, query):
             buttonMore = Button(label="More posts", style=discord.ButtonStyle.green)
             buttonStop = Button(label="Stop searching", style=discord.ButtonStyle.red)
 
-            embed = discord.Embed(
-                                title="Do you want to see more posts?",
-                                description="Click one of the buttons below.",
-                                color=discord.Color.blue()
-                                )
+            embed = discord.Embed(color=discord.Color.red())
+            embed.description = "Do you want to see more posts related to your query?"
             # Adding buttons
-            buttons = [
-                buttonMore,
-                buttonStop
-            ]
+            buttons = [buttonMore, buttonStop]
 
-            action_row = discord.ActionRow(*buttons)
+            action_row = discord.ui.ActionRow(*buttons)
 
             # Sending the message with buttons
             await ctx.send(embed=embed, components=[action_row])
