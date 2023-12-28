@@ -192,7 +192,7 @@ async def search_reddit(ctx, query):
         new_posts = []
 
         # Filter out posts that have already been displayed
-        new_posts.append(post for post in search_results if post not in displayed_posts)
+        new_posts.append([post for post in search_results if post not in displayed_posts])
         random_posts = random.sample(new_posts, 3)
 
         # Set has_ran value so the function doesn't loop infinitely
@@ -280,7 +280,7 @@ async def search_reddit(ctx, query):
                 # Check the user's reaction
                 if reaction.emoji == "✅":
                     has_ran = True
-                    new_posts.append(post for post in search_results if post not in displayed_posts)
+                    new_posts.append([post for post in search_results if post not in displayed_posts])
                     random_posts = random.sample(new_posts, 3)
                     await send_posts(random_posts)
                 elif reaction.emoji == "❌":
