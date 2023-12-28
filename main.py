@@ -186,17 +186,20 @@ async def search_reddit(ctx, query):
         # Fetch 50 posts based on the user's query
         search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
 
-        # Initialize an empty list to store already seen posts
+        # Initialize empty lists to store already seen posts and to store new Posts
+        # So that the send_posts function knows what posts not to send and what posts it has available to display
         displayed_posts = []
+        new_posts = []
 
         # Filter out posts that have already been displayed
-        new_posts = [post for post in search_results if post.id not in displayed_posts][:3]
+        new_posts.append(post for post in search_results if post not in displayed_posts)
+        random_posts = random.sample(new_posts, 3)
 
         # Set has_ran value so the function doesn't loop infinitely
         has_ran = False
 
-        async def send_posts(new_posts):
-            for post in new_posts:
+        async def send_posts(random_posts):
+            for post in random_posts:
 
                 # Check the media type of the posts
                 media_type = getattr(post.media, "type", None)
@@ -246,17 +249,20 @@ async def search_reddit(ctx, query):
                 if f'discord' not in post.url:
                     # Send the post
                     await ctx.send(embed=embed)
-                    # Add the post ID to the set of displayed posts
-                    displayed_posts.append(post.id)
-                    # Remove the post from the new_posts list
+                    # Add the post to the set of displayed posts
+                    # So the bot knows not to display these posts anymore.
+                    displayed_posts.append(post)
+                    # Remove the post from the new_posts and random_posts list
+                    # So it doesn't send the same posts again in a loop.
                     new_posts.remove(post)
+                    random_posts.remove(post)
                     # log
                     print(f'Displayed Posts: {displayed_posts} New Posts: {new_posts}')
                 else:
                     print(f'discord link in post {post}')
 
-            if len(new_posts) == 0:
-                await send_embed_message(ctx, f'No more posts to display, please run the command again.', discord.Color.red())
+            if len(new_posts) <= 1:
+                await send_embed_message(ctx, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
                 return
 
         # Send the posts
@@ -269,8 +275,8 @@ async def search_reddit(ctx, query):
         await message.add_reaction('❌')
 
         # Function to check user reaction
-        def check(reaction, user):
-            return user == ctx.message.author and str(reaction.emoji) in ['✅', '❌']
+        def check_reaction(reaction, user):
+            return user == ctx.author and reaction.message == message and reaction.emoji in ["✅", "❌"]
 
         try:
             while True:
@@ -278,14 +284,15 @@ async def search_reddit(ctx, query):
                 reaction, user = await bot.wait_for('reaction_add', check=check)
 
                 # Check the user's reaction
-                if str(reaction.emoji) == '✅':
+                if reaction.emoji == "✅":
                     has_ran = True
-                    new_posts = [post for post in search_results if post.id not in displayed_posts][:3]
-                    await send_posts(new_posts)
-                elif str(reaction.emoji) == '❌':
+                    new_posts.append(post for post in search_results if post not in displayed_posts)
+                    random_posts = random.sample(new_posts, 3)
+                    await send_posts(random_posts)
+                elif reaction.emoji == "❌":
                     has_ran = False
                     await send_embed_message(ctx, f"Stopping the display of more posts.", discord.Color.red())
-                    break
+                    return
         except Exception as e:
             print(f'An error occurred: {e}')
 
