@@ -249,6 +249,7 @@ async def search_reddit(ctx, query):
                     # Add the post to the set of displayed posts
                     # So the bot knows not to display these posts anymore.
                     displayed_posts.append(post)
+                    continue
                 else:
                     print(f'discord link in post {post}')
 
