@@ -262,6 +262,8 @@ async def search_reddit(ctx, query):
         # Send the posts
         if has_ran == False:
             await send_posts(random_posts)
+        else:
+            continue
 
         # Ask the user if they want to see more posts
         message = await send_embed_message(ctx, f"Do you want to see more posts? React with ✅ for more or ❌ to stop.", discord.Color.red())
@@ -283,6 +285,7 @@ async def search_reddit(ctx, query):
                     new_posts.extend([post for post in search_results if post not in displayed_posts])
                     random_posts = random.sample(new_posts, 3)
                     await send_posts(random_posts)
+                    return
                 elif reaction.emoji == "❌":
                     has_ran = False
                     await send_embed_message(ctx, f"Stopping the display of more posts.", discord.Color.red())
