@@ -271,7 +271,7 @@ async def search_reddit(ctx, query):
             embed = discord.Embed(color=discord.Color.red())
             embed.description = "Do you want to see more posts related to your query?"
 
-            async def buttonMore_callback(self, interaction):
+            async def buttonMore_callback(interaction):
                 await interaction.response.edit_message(view=None)
                 await promptMessage.delete()
                 has_ran = True
@@ -280,7 +280,7 @@ async def search_reddit(ctx, query):
                 await send_posts(random_posts)
                 await prompt_more()
 
-            async def buttonStop_callback(self, interaction):
+            async def buttonStop_callback(interaction):
                 await interaction.response.edit_message(view=None)
                 await promptMessage.delete()
 
