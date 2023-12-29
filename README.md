@@ -52,7 +52,7 @@ Then once the bot is in your server you can simply use the `/setup` command to s
 
 ## Support
 
-For any issues, questions, or suggestions, please join our [support server](https://discord.gg/ZPy7Ddxad8).
+For any issues, questions, or suggestions, please join our [support discord server](https://discord.gg/ZPy7Ddxad8).
 
 ## Contributing
 
