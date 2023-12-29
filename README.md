@@ -47,6 +47,7 @@ Then once the bot is in your server you can simply use the `/setup` command to s
 - `%lincom <command_name>`: Get a Linux command explanation from ChatGPT.
 - `/setup`: Set up the CRYPTCADA log channel. (Admin permissions required)
 - `/ping`: Check the bot's latency.
+- `/invite`: Invite the bot to a different server.
 - `/help`: Show available commands.
 
 ## Support
