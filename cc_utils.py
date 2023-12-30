@@ -38,10 +38,10 @@ async def sanitize_urls(message):
     print(f'received message')
     try:
         # regex for urls
-        url_re = r"(www.|https.?\://).*?(?=[<`\n \"\'])"
+        url_re = r"(https?://\S+|www\.\S+)"
 
         # set for all urls in msg
-        urls = set(re.findall(url_re, message.content)
+        urls = set(re.findall(url_re, message.content))
 
         # print the list of urls for console logging
         if urls:
@@ -87,10 +87,10 @@ async def sanitize_urls(message):
                 else:
                     continue
 
-            # if we get to this point, we know that all the urls passed the VirusTotal scan,
-            # and we can deem the msg safe
+        # if we get to this point, we know that all the urls passed the VirusTotal scan,
+        # and we can deem the msg safe
 
-            return "OK"
+        return "OK"
 
     except Exception as e:
         print(f'An error has occurred: {e}')
