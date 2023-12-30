@@ -40,8 +40,8 @@ async def sanitize_urls(message):
         # regex for urls
         url_re = r"(www.|http.?\://).*?(?=[<`\n \"\'])"
 
-        # list for all urls in msg
-        urls = set(re.findall(url_re, message.content))
+        # set for all urls in msg
+        urls = set(re.findall(url_re, message))
 
         # print the list of urls for console logging
         if urls:
@@ -83,11 +83,7 @@ async def sanitize_urls(message):
             if 'data' in result:
                 if result['data']['attributes']['last_analysis_stats']['malicious'] > 0:
                     print(f'{url} was deemed malicious by VirusTotal')
-                    guild = message.guild
-                    if guild:
-                        return 'ERR'
-                    else:
-                        print(f'error getting server.')
+                    return 'ERR'
                 else:
                     continue
 

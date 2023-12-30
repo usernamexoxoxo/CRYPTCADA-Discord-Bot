@@ -12,6 +12,7 @@
 
 #imports
 import os
+import asyncio
 import discord
 from discord.ext import commands
 import discord.ui
@@ -92,8 +93,8 @@ async def on_message(message):
 
     vt_url = None # Initialize vt_url variable
 
-    # check if the msg contains a url/s, and if it does, if it/they are malicious
-    is_mal = await sanitize_urls(message)
+    # check if the msg contains an url/s, and if it does, if it/they are malicious
+    is_mal = await sanitize_urls(str(message.content).lower())
 
     # if the url/s is safe, we resume safely.
     # otherwise, we warn the sender, log the event, and delete the message
@@ -411,23 +412,45 @@ async def translate(ctx, *, input_text):
         input_text = input_text.replace(' ', '')
         try:
             text = ''.join(chr(int(input_text[i:i+8], 2)) for i in range(0, len(input_text), 8))
-            await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
+
+            # check for malicious links inside decoded text
+            if sanitize_urls(text):
+                await send_embed_message(ctx, "Message contained harmful content", discord.Color.red())
+            else:
+                await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
+
         except ValueError:
             await send_embed_message(ctx, "Invalid binary input.", discord.Color.red())
+
+
     elif input_type == 'hexadecimal':
         # Translate hexadecimal to text
         try:
             text = binascii.unhexlify(input_text.replace(" ", "")).decode('utf-8')
-            await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
+
+            # check for malicious links inside decoded text
+            if sanitize_urls(text):
+                await send_embed_message(ctx, "Message contained harmful content", discord.Color.red())
+            else:
+                await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
+
         except (binascii.Error, UnicodeDecodeError):
             await send_embed_message(ctx, "Invalid hexadecimal input.", discord.Color.red())
+
+
     elif input_type == 'chill++':
         # Translate from "chill++" by converting from "ice_cube" and "droplet" to binary and then from binary to text"
         input_text = input_text.replace('🧊', "0").replace('💧', "1")
         input_text = input_text.replace(' ', '')
         try:
             text = ''.join(chr(int(input_text[i:i+8], 2)) for i in range(0, len(input_text), 8))
-            await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
+
+            # check for malicious links inside decoded text
+            if sanitize_urls(text):
+                await send_embed_message(ctx, "Message contained harmful content", discord.Color.red())
+            else:
+                await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
+
         except ValueError:
             await send_embed_message(ctx, "Invalid chill++ input.", discord.Color.red())
     else:
