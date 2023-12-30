@@ -38,10 +38,10 @@ async def sanitize_urls(message):
     print(f'received message')
     try:
         # regex for urls
-        url_re = r"(www.|http.?\://).*?(?=[<`\n \"\'])"
+        url_re = r"(www.|https.?\://).*?(?=[<`\n \"\'])"
 
         # set for all urls in msg
-        urls = set(re.findall(url_re, message))
+        urls = set(re.findall(url_re, message.content))
 
         # print the list of urls for console logging
         if urls:
