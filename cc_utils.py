@@ -36,6 +36,9 @@ async def on_mal_msg(message):
 async def sanitize_urls(message):
 
     print(f'received message')
+    print('\n debugging inside of sanitize func')
+    print(message)
+    print('\n')
     try:
         # regex for urls
         url_re = r"(?:(?:https?|ftp):\/\/|www\.)[^\s\/$.?#].[^\s]*?(?=[<>`\n \"\'])"
