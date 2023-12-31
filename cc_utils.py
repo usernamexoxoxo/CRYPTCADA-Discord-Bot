@@ -41,7 +41,7 @@ async def sanitize_urls(message):
         url_re = r"(?:(?:https?|ftp):\/\/|www\.)[^\s\/$.?#].[^\s]*?(?=[<>`\n \"\'])"
 
         # set for all urls in msg
-        urls = set(re.findall(url_re, message.content))
+        urls = set(re.findall(url_re, message))
 
         # print the list of urls for console logging
         if urls:
