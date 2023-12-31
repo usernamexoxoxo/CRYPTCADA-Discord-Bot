@@ -94,9 +94,10 @@ async def on_message(message):
     vt_url = None # Initialize vt_url variable
 
     # check if the msg contains an url/s, and if it does, if it/they are malicious
+    print("debugging line below")
     print(message.content)
     print(type(message.content))
-    is_mal = await sanitize_urls(message.content)
+    is_mal = await sanitize_urls(str(message.content))
 
     # if the url/s is safe, we resume safely.
     # otherwise, we warn the sender, log the event, and delete the message
