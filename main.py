@@ -97,7 +97,7 @@ async def on_message(message):
     print("debugging line below")
     print(message.content)
     print(type(message.content))
-    is_mal = await sanitize_urls(str(message))
+    is_mal = await sanitize_urls(str(message.content).lower())
 
     # if the url/s is safe, we resume safely.
     # otherwise, we warn the sender, log the event, and delete the message
