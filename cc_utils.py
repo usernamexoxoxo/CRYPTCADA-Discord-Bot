@@ -39,9 +39,9 @@ async def sanitize_urls(message):
     print(f"str(message) is: {str(message)}")
     try:
         # regex for urls
-        url_re = r"(http.?://|www\.|ftp://).*?(?=[<> \n`\"\'])"
+        url_re = r"((?:http.?://|www\.|ftp://).*?(?=[<> \n`\"\']))"
         # set for all urls in msg
-        urls = set(re.findall(url_re, message))
+        urls = set(re.findall(url_re, f'{message} '))
 
         # print the list of urls for console logging
         if urls:
