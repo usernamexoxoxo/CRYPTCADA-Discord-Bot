@@ -417,7 +417,7 @@ async def translate(ctx, *, input_text):
             text = ''.join(chr(int(input_text[i:i+8], 2)) for i in range(0, len(input_text), 8))
 
             # check for malicious links inside decoded text
-            if await sanitize_urls(text):
+            if await sanitize_urls(text) == "OK":
                 await send_embed_message(ctx, "Message contained harmful content", discord.Color.red())
             else:
                 await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
@@ -432,7 +432,7 @@ async def translate(ctx, *, input_text):
             text = binascii.unhexlify(input_text.replace(" ", "")).decode('utf-8')
 
             # check for malicious links inside decoded text
-            if await sanitize_urls(text):
+            if await sanitize_urls(text) == "OK":
                 await send_embed_message(ctx, "Message contained harmful content", discord.Color.red())
             else:
                 await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
@@ -449,7 +449,7 @@ async def translate(ctx, *, input_text):
             text = ''.join(chr(int(input_text[i:i+8], 2)) for i in range(0, len(input_text), 8))
 
             # check for malicious links inside decoded text
-            if await sanitize_urls(text):
+            if await sanitize_urls(text) == "OK":
                 await send_embed_message(ctx, "Message contained harmful content", discord.Color.red())
             else:
                 await send_embed_message(ctx, f"Text: ```{text}```", discord.Color.red())
