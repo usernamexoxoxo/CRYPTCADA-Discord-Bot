@@ -152,6 +152,24 @@ async def on_message(message):
     else:
         return
 
+@bot.event
+async def on_message_edit(before, after):
+
+    vt_url = None # Initialize vt_url variable
+
+    # check if the msg contains an url/s, and if it does, if it/they are malicious
+    print("debugging line below")
+    print(after.content)
+    print(type(after.content))
+    is_mal = await sanitize_urls(str(after.content).lower())
+
+    # if the url/s is safe, we resume safely.
+    # otherwise, we warn the sender, log the event, and delete the message
+    if is_mal == "OK":
+        print(f'returned safe')
+    elif is_mal == "ERR":
+        await on_mal_msg(after)
+
 @bot.command(name='meme', description="Sends a random meme from reddit.")
 async def meme(ctx):
     try:
