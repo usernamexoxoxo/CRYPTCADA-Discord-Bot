@@ -21,6 +21,8 @@ from discord import app_commands, Interaction, Embed, Color
 import pycord
 from urllib.parse import urlparse, unquote
 import praw
+import string
+import secrets
 import openai
 import random
 import binascii
