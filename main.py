@@ -481,11 +481,11 @@ async def ping(ctx: Interaction):
 @bot.tree.command(name='passwordgen', description="Generates a secure password and sends it privately through ephemeral responses.")
 async def passwordgen(ctx: Interaction, length: int = 12):
     if length < 6:
-        embed = discord.Embed(description="Password length must be at least 6 characters.", color=discord.Color.red())
+        embed = discord.Embed(description="Password length should be at least 6 characters.", color=discord.Color.red())
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
-    elif length > 24:
-        embed = discord.Embed(description="Password length can't be more than 24 characters.", color=discord.Color.red())
+    elif length > 30:
+        embed = discord.Embed(description="Password length can't be more than 30 characters.", color=discord.Color.red())
         await ctx.response.send_message(embed=embed, ephemeral=True)
         return
 
