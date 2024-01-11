@@ -480,8 +480,8 @@ async def ping(ctx: Interaction):
     latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
     await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
 
-@bot.tree.command(name='passwordgen', description='Generates a secure password and sends it privately through ephemeral responses.')
-async def passwordgen(ctx: discord.Interaction, length: int = 12):
+@bot.tree.command(name='passwordgen', description="Generates a secure password and sends it privately through ephemeral responses.")
+async def passwordgen(ctx: Interaction, length: int = 12):
     if length < 6:
         embed = discord.Embed(description="Password length must be at least 6 characters.", color=discord.Color.red())
         await ctx.response.send_message(embed=embed, ephemeral=True)
