@@ -271,7 +271,6 @@ async def search_reddit(ctx, query):
                 # Display the time when it was posted
                 embed.timestamp = created_time
 
-                # Make sure no discord invites are in the post
                 if f'discord' not in post.url:
                     # Send the post
                     await ctx.send(embed=embed)
@@ -317,7 +316,6 @@ async def search_reddit(ctx, query):
 
             promptMessage = await ctx.send(embed=embed, view=view)
 
-        # Send the posts
         if has_ran == False:
             await send_posts(random_posts)
             await prompt_more()
@@ -327,7 +325,6 @@ async def search_reddit(ctx, query):
 
 @bot.command(name='question', description="Ask ChatGPT a question.")
 async def question(ctx, *, question):
-    # Interact with ChatGPT for coding advice
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt=f"{question}",
@@ -337,7 +334,6 @@ async def question(ctx, *, question):
 
 @bot.command(name='fix_code', description="Let ChatGPT fix your code.")
 async def fix_code(ctx, *, code):
-    # Interact with ChatGPT for coding advice
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt=f"how do I fix this code? {code}",
@@ -347,23 +343,25 @@ async def fix_code(ctx, *, code):
 
 @bot.command(name='lincom', description="Let ChatGPT explain a linux command to you.")
 async def lincom(ctx, *, command_name):
-    # Interact with ChatGPT for command epxlanations
     response = openai.Completion.create(
         engine="text-davinci-002",
-        prompt=f"how does the '{command_name}' command function and what is its syntax usage",
+        prompt=f"how does the '{command_name}' linux command function and what is its syntax usage",
         max_tokens=3000
     )
     await send_embed_message(ctx, response.choices[0].text, discord.Color.red())
 
 @bot.command(name='joke', description="Make ChatGPT tell you a joke.")
 async def joke(ctx):
-    # Generate a random joke using ChatGPT
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt="Tell me a new random joke.",
         max_tokens=3000
     )
     await send_embed_message(ctx, response.choices[0].text, discord.Color.red())
+
+@bot.command(name='amipwned', description='Check the "have I been pwned" api to see if your username or email has been pwned.')
+async def amipwned(ctx, usernameormail):
+
 
 # Function to provide text translation options with embed
 async def provide_text_translation_options(ctx, text):
@@ -481,6 +479,27 @@ async def translate(ctx, *, input_text):
 async def ping(ctx: Interaction):
     latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
     await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
+
+@bot.tree.command(name='passwordgen', description='Generates a secure password and sends it privately through ephemeral responses.')
+async def passwordgen(ctx: discord.Interaction, length: int = 12):
+    if length < 6:
+        embed = discord.Embed(description="Password length must be at least 6 characters.", color=discord.Color.red())
+        await ctx.response.send_message(embed=embed, ephemeral=True)
+        return
+    elif length > 24:
+        embed = discord.Embed(description="Password length can't be more than 24 characters.", color=discord.Color.red())
+        await ctx.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    letters = string.ascii_letters
+    digits = string.digits
+    symbols = string.punctuation
+
+    all_characters = letters + digits + symbols
+    password = ''.join(secrets.choice(all_characters) for i in range(length))
+
+    embed = discord.Embed(title="Your generated password:", description=f"`{password}`", color=discord.Color.red())
+    await ctx.response.send_message(embed=embed, ephemeral=True)
 
 @bot.tree.command(name='invite', description='Invite the bot to your own server!')
 async def prompt_more_two(ctx: Interaction):
