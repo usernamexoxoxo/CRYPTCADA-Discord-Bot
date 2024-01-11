@@ -359,10 +359,6 @@ async def joke(ctx):
     )
     await send_embed_message(ctx, response.choices[0].text, discord.Color.red())
 
-@bot.command(name='amipwned', description='Check the "have I been pwned" api to see if your username or email has been pwned.')
-async def amipwned(ctx, usernameormail):
-
-
 # Function to provide text translation options with embed
 async def provide_text_translation_options(ctx, text):
     # Create an embed with translation options
