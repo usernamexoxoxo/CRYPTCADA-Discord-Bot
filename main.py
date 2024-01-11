@@ -546,7 +546,7 @@ async def help(ctx: Interaction):
         '**%search_reddit  < query >**':  'Search Reddit for posts based on a query.',
         '**%translate  < Text to translate >**':  'Translate between text, binary, hexadecimal and chill++.',
         '**%lincom  < command name >**':  'Get a command explanation from ChatGPT.',
-        '**/passwordgen  < password length >**':  'Generates a secure password and sends it privately through an ephemeral response.'
+        '**/passwordgen  < password length >**':  'Generates a secure password and sends it privately through an ephemeral response.',
         '**/setup**':  'Set up the CRYPTCADA log channel. (Admin permissions required)',
         '**/ping**':  'Tells you the bots latency.',
         '**/invite**':  'Invite the bot to your own server.',
