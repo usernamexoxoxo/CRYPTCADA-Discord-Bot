@@ -81,7 +81,7 @@ async def sanitize_urls(message):
 
             # check if the result flagged the url, and if it did, return error msg
             if 'data' in result:
-                if result['data']['attributes']['last_analysis_stats']['malicious'] > 0:
+                if result['data']['attributes']['last_analysis_stats']['malicious'] > 2:
                     print(f'{url} was deemed malicious by VirusTotal')
                     return 'ERR'
                 else:
