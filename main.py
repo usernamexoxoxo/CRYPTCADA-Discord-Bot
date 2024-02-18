@@ -60,6 +60,12 @@ openai.api_key = OPENAI_API_KEY
 
 # Initialize functionality to automatically send disboard "/bump" command
 # every 2 hours
+print("outside thread")
+print(bot.get_channel("1187374254954643498"))
+print("2nd: ")
+print(bot.get_channel(1187374254954643498))
+print("all")
+print(bot.get_all_channels())
 def auto_bump():
     global bot
     channel = bot.get_channel("1187374254954643498")
