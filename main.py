@@ -62,7 +62,7 @@ openai.api_key = OPENAI_API_KEY
 # every 2 hours
 def auto_bump():
     global bot
-    channel = bot.get_channel(1187374254954643498)
+    channel = bot.get_channel(id="1187374254954643498")
     if channel:
         print(channel)
         print("got channel")
