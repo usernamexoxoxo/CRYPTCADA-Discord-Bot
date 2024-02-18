@@ -28,9 +28,8 @@ import random
 import binascii
 import logging
 import datetime
-import subprocess
-import requests
-import base64
+import threading
+import time
 from wordfilter import wordfilter
 from cc_utils import on_mal_msg, sanitize_urls
 from config import DISCORD_BOT_TOKEN, REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT, OPENAI_API_KEY, VIRUSTOTAL_API_KEY
@@ -57,8 +56,23 @@ reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
 
 # Initialize OpenAI GPT-3
 openai.api_key = OPENAI_API_KEY
-
 # Initialize Embed Messages
+
+# Initialize functionality to automatically send disboard "/bump" command
+# every 2 hours
+def auto_bump():
+    global bot
+    channel = discord.utils.get(bot.get_all_channels(), "bot-commands")
+    channel.send("/bump")
+    while True:
+        time.sleep(125)
+        channel.send("/bump")
+
+# Start auto_bump() in separate thread so that it does not interfere with
+# other functionality
+bump_thread = threading.Thread(target=auto_bump)
+bump_thread.start()
+
 async def send_embed_message(ctx, content, color):
     embed = discord.Embed(description=content, color=color)
     return await ctx.send(embed=embed)
@@ -92,7 +106,6 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-
     vt_url = None # Initialize vt_url variable
 
     # check if the msg contains an url/s, and if it does, if it/they are malicious

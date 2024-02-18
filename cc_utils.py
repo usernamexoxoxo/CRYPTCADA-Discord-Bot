@@ -6,6 +6,8 @@ import requests
 from urllib.parse import urlparse, unquote
 from config import VIRUSTOTAL_API_KEY
 
+def auto_bump(client):
+    channel = discord.utils.get(client.get_all_channels(), )
 async def on_mal_msg(message):
     audit_reason = f'Posted a link that was flagged as malicious by the CRYPTCADA bot, the message has been deleted.'
     warn_reason = f'You posted a link that was flagged as malicious by the CRYPTCADA bot and it has been deleted, please refrain from posting malicious links in the server. \n \n *If you think this was a mistake, please open a ticket.*'
