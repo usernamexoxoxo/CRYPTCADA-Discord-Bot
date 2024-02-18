@@ -63,7 +63,10 @@ openai.api_key = OPENAI_API_KEY
 def auto_bump():
     global bot
     channel = discord.utils.get(bot.get_all_channels(), "bot-commands")
+    print("auto bump debug: ")
+    print(channel)
     channel.send("/bump")
+    print("entering loop")
     while True:
         time.sleep(125)
         channel.send("/bump")
