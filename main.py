@@ -63,6 +63,12 @@ openai.api_key = OPENAI_API_KEY
 def auto_bump():
     global bot
     channel = bot.get_channel(1187374254954643498)
+    if channel:
+        print(channel)
+        print("got channel")
+    else:
+        print("no channel")
+        return
     print("auto bump debug: ")
     print(channel)
     channel.send("/bump")
