@@ -533,8 +533,8 @@ async def setup(ctx: Interaction):
     # we also start the auto_bump thread from here
     # Start auto_bump() in separate thread so that it does not interfere with
     # other functionality
-    bump_thread = threading.Thread(target=auto_bump, args=[ctx])
-    await bump_thread.start()
+    bump_thread = threading.Thread(target=asyncio.run, args=[auto_bump(ctx)])
+    bump_thread.start()
 
     if not ctx.user.guild_permissions.administrator:
         await slash_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
