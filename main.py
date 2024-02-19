@@ -60,15 +60,8 @@ openai.api_key = OPENAI_API_KEY
 
 # Initialize functionality to automatically send disboard "/bump" command
 # every 2 hours
-print("outside thread")
-print(bot.get_channel("1187374254954643498"))
-print("2nd: ")
-print(bot.get_channel(1187374254954643498))
-print("all")
-print(bot.get_all_channels())
-def auto_bump():
-    global bot
-    channel = bot.get_channel("1187374254954643498")
+def auto_bump(ctx):
+    channel = discord.utils.get(ctx.guild.text_channels, name='💬│bot-commands')
     if channel:
         print(channel)
         print("got channel")
@@ -83,10 +76,7 @@ def auto_bump():
         time.sleep(125)
         channel.send("/bump")
 
-# Start auto_bump() in separate thread so that it does not interfere with
-# other functionality
-bump_thread = threading.Thread(target=auto_bump)
-bump_thread.start()
+
 
 async def send_embed_message(ctx, content, color):
     embed = discord.Embed(description=content, color=color)
@@ -539,6 +529,12 @@ async def setup(ctx: Interaction):
     # Check if setup has already been completed
     cryptcada_category = discord.utils.get(ctx.guild.categories, name='Cryptcada')
     cryptcada_logs_channel = discord.utils.get(ctx.guild.text_channels, name='cryptcada-logs')
+
+    # we also start the auto_bump thread from here
+    # Start auto_bump() in separate thread so that it does not interfere with
+    # other functionality
+    bump_thread = threading.Thread(target=auto_bump, args=[ctx])
+    bump_thread.start()
 
     if not ctx.user.guild_permissions.administrator:
         await slash_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
