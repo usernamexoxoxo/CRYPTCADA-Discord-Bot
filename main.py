@@ -60,7 +60,7 @@ openai.api_key = OPENAI_API_KEY
 
 # Initialize functionality to automatically send disboard "/bump" command
 # every 2 hours
-def auto_bump(ctx):
+async def auto_bump(ctx):
     channel = discord.utils.get(ctx.guild.text_channels, name='💬│bot-commands')
     if channel:
         print(channel)
@@ -70,11 +70,11 @@ def auto_bump(ctx):
         return
     print("auto bump debug: ")
     print(channel)
-    channel.send("/bump")
+    await channel.send("/bump")
     print("entering loop")
     while True:
         time.sleep(125)
-        channel.send("/bump")
+        await channel.send("/bump")
 
 
 
