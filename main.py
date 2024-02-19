@@ -530,11 +530,8 @@ async def setup(ctx: Interaction):
     cryptcada_category = discord.utils.get(ctx.guild.categories, name='Cryptcada')
     cryptcada_logs_channel = discord.utils.get(ctx.guild.text_channels, name='cryptcada-logs')
 
-    # we also start the auto_bump thread from here
-    # Start auto_bump() in separate thread so that it does not interfere with
-    # other functionality
-    bump_thread = threading.Thread(target=asyncio.run, args=[auto_bump(ctx)])
-    bump_thread.start()
+    # Start auto_bump()
+    await auto_bump(ctx)
 
     if not ctx.user.guild_permissions.administrator:
         await slash_embed_message(ctx, f'You do not have the necessary permissions to use this command.', discord.Color.red())
