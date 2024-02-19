@@ -73,7 +73,7 @@ async def auto_bump(ctx):
     await channel.send("/bump")
     print("entering loop")
     while True:
-        time.sleep(125)
+        await time.sleep(125)
         await channel.send("/bump")
 
 
