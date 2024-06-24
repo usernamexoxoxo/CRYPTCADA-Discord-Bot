@@ -326,7 +326,7 @@ async def search_reddit(ctx, query):
 @bot.command(name='question', description="Ask ChatGPT a question.")
 async def question(ctx, *, question):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-16k",
         messages=[{
             "role": "user",
             "content": question
@@ -337,7 +337,7 @@ async def question(ctx, *, question):
 @bot.command(name='fix_code', description="Let ChatGPT fix your code.")
 async def fix_code(ctx, *, code):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-16k",
         messages=[{
             "role": "user",
             "content": f"how do I fix this code? {code}"
@@ -347,8 +347,8 @@ async def fix_code(ctx, *, code):
 
 @bot.command(name='lincom', description="Let ChatGPT explain a linux command to you.")
 async def lincom(ctx, *, command_name):
-    response = openai.ChatCompletion.createe(
-        model="gpt-3.5-turbo",
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-16k",
         messages=[{
             "role": "user",
             "content": f"how does the '{command_name}' linux command function and what is its syntax usage"
@@ -359,7 +359,7 @@ async def lincom(ctx, *, command_name):
 @bot.command(name='joke', description="Make ChatGPT tell you a joke.")
 async def joke(ctx):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-16k",
         messages=[{
             "role": "user",
             "content": "Tell me a new random joke."
