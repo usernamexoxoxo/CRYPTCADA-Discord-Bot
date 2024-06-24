@@ -334,7 +334,8 @@ async def search_reddit(ctx: Interaction, query: str):
         random_posts = random.sample(new_posts, 3)
         has_ran = False
 
-        async def send_posts(random_posts):
+        async def send_posts(random_posts, first_call=False):
+            embeds = []
             for post in random_posts:
                 media_type = getattr(post.media, "type", None)
                 print(f'post found: ""{post}"" with media type: {media_type}')
@@ -361,11 +362,16 @@ async def search_reddit(ctx: Interaction, query: str):
                 embed.timestamp = created_time
 
                 if f'discord' not in post.url:
-                    await ctx.response.send_message(embed=embed, ephemeral=True)
+                    embeds.append(embed)
                     displayed_posts.append(post)
                     new_posts.remove(post)
                 else:
                     print(f'discord link in post {post}')
+
+            if first_call:
+                await ctx.response.send_message(embeds=embeds)
+            else:
+                await ctx.followup.send(embeds=embeds)
 
             if len(new_posts) <= 1:
                 await slash_embed_message(ctx, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
@@ -397,10 +403,10 @@ async def search_reddit(ctx: Interaction, query: str):
             view.add_item(buttonMore)
             view.add_item(buttonStop)
 
-            await ctx.response.send_message(embed=embed, view=view, ephemeral=True)
+            await ctx.followup.send(embed=embed, view=view, ephemeral=True)
 
         if has_ran == False:
-            await send_posts(random_posts)
+            await send_posts(random_posts, first_call=True)
             await prompt_more()
 
     except Exception as e:
