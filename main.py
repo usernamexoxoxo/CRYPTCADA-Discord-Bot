@@ -204,8 +204,8 @@ async def meme(ctx):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-@bot.command(name='search_reddit', description="Search reddit based on a query.")
-async def search_reddit(ctx, query):
+@bot.tree.command(name='search_reddit', description="Search reddit based on a query.")
+async def search_reddit(interaction: discord.Interaction, query: str):
     try:
         print(f'%search_reddit command ran with query: {query}')
 
@@ -269,7 +269,7 @@ async def search_reddit(ctx, query):
 
                 if f'discord' not in post.url:
                     # Send the post
-                    await ctx.send(embed=embed)
+                    await interaction.response.send_message(embed=embed, ephemeral=True)
                     # Add the post to the set of displayed posts
                     # So the bot knows not to display these posts anymore.
                     displayed_posts.append(post)
@@ -278,7 +278,7 @@ async def search_reddit(ctx, query):
                     print(f'discord link in post {post}')
 
             if len(new_posts) <= 1:
-                await send_embed_message(ctx, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
+                await send_embed_message(interaction, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
                 return
 
         async def prompt_more():
@@ -288,20 +288,17 @@ async def search_reddit(ctx, query):
             embed = discord.Embed(color=discord.Color.red())
             embed.description = "Do you want to see more posts related to your query?"
 
-            async def buttonMore_callback(interaction):
-                await promptMessage.delete()
+            async def buttonMore_callback(interaction: discord.Interaction):
+                await interaction.response.defer()
+                nonlocal has_ran
                 has_ran = True
                 new_posts.extend([post for post in search_results if post not in displayed_posts])
                 random_posts = random.sample(new_posts, 3)
                 await send_posts(random_posts)
                 await prompt_more()
 
-            async def buttonStop_callback(interaction):
-                await promptMessage.delete()
-
-            async def on_timeout():
-                await interaction.response.edit_message(view=None)
-                await promptMessage.delete()
+            async def buttonStop_callback(interaction: discord.Interaction):
+                await interaction.response.defer()
 
             buttonMore.callback = buttonMore_callback
             buttonStop.callback = buttonStop_callback
@@ -310,7 +307,7 @@ async def search_reddit(ctx, query):
             view.add_item(buttonMore)
             view.add_item(buttonStop)
 
-            promptMessage = await ctx.send(embed=embed, view=view)
+            await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
         if has_ran == False:
             await send_posts(random_posts)
@@ -318,7 +315,7 @@ async def search_reddit(ctx, query):
 
     except Exception as e:
         print(f"An error occurred: {e}")
-
+        
 # Function to provide text translation options with embed
 async def provide_text_translation_options(ctx, text):
     # Create an embed with translation options
