@@ -385,7 +385,7 @@ async def search_reddit(ctx: Interaction, query: str):
             embed.description = "Do you want to see more posts related to your query?"
 
             async def buttonMore_callback(button_interaction: Interaction):
-                await button_interaction.response.edit_message(view=None)
+                await button_interaction.message.delete()
                 nonlocal has_ran
                 has_ran = True
                 new_posts.extend([post for post in search_results if post not in displayed_posts])
@@ -394,7 +394,7 @@ async def search_reddit(ctx: Interaction, query: str):
                 await prompt_more()
 
             async def buttonStop_callback(button_interaction: Interaction):
-                await button_interaction.response.edit_message(view=None)
+                await button_interaction.message.delete()
 
             buttonMore.callback = buttonMore_callback
             buttonStop.callback = buttonStop_callback
@@ -411,6 +411,7 @@ async def search_reddit(ctx: Interaction, query: str):
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
 
 @bot.tree.command(name='passwordgen', description="Generates a secure password and sends it privately through ephemeral responses.")
 async def passwordgen(ctx: Interaction, length: int = 12):
