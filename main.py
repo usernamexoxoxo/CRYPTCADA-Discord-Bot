@@ -56,28 +56,8 @@ reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
 
 # Initialize OpenAI GPT-3
 openai.api_key = OPENAI_API_KEY
+
 # Initialize Embed Messages
-
-# Initialize functionality to automatically send disboard "/bump" command
-# every 2 hours
-async def auto_bump(ctx):
-    channel = discord.utils.get(ctx.guild.text_channels, name='💬│bot-commands')
-    if channel:
-        print(channel)
-        print("got channel")
-    else:
-        print("no channel")
-        return
-    print("auto bump debug: ")
-    print(channel)
-    await channel.send("/bump")
-    print("entering loop")
-    while True:
-        await time.sleep(125)
-        await channel.send("/bump")
-
-
-
 async def send_embed_message(ctx, content, color):
     embed = discord.Embed(description=content, color=color)
     return await ctx.send(embed=embed)
@@ -346,7 +326,7 @@ async def search_reddit(ctx, query):
 @bot.command(name='question', description="Ask ChatGPT a question.")
 async def question(ctx, *, question):
     response = openai.Completion.create(
-        engine="text-davinci-002",
+        engine="gpt-3.5-turbo",
         prompt=f"{question}",
         max_tokens=3000
     )
@@ -355,7 +335,7 @@ async def question(ctx, *, question):
 @bot.command(name='fix_code', description="Let ChatGPT fix your code.")
 async def fix_code(ctx, *, code):
     response = openai.Completion.create(
-        engine="text-davinci-002",
+        engine="gpt-3.5-turbo",
         prompt=f"how do I fix this code? {code}",
         max_tokens=3000
     )
@@ -364,7 +344,7 @@ async def fix_code(ctx, *, code):
 @bot.command(name='lincom', description="Let ChatGPT explain a linux command to you.")
 async def lincom(ctx, *, command_name):
     response = openai.Completion.create(
-        engine="text-davinci-002",
+        engine="gpt-3.5-turbo",
         prompt=f"how does the '{command_name}' linux command function and what is its syntax usage",
         max_tokens=3000
     )
@@ -373,7 +353,7 @@ async def lincom(ctx, *, command_name):
 @bot.command(name='joke', description="Make ChatGPT tell you a joke.")
 async def joke(ctx):
     response = openai.Completion.create(
-        engine="text-davinci-002",
+        engine="gpt-3.5-turbo",
         prompt="Tell me a new random joke.",
         max_tokens=3000
     )
