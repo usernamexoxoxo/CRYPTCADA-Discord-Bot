@@ -23,7 +23,7 @@ from urllib.parse import urlparse, unquote
 import praw
 import string
 import secrets
-import openai
+from openai import OpenAI
 import random
 import binascii
 import logging
@@ -55,7 +55,7 @@ reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
                      user_agent = REDDIT_USER_AGENT)
 
 # Initialize OpenAI GPT-3
-openai.api_key = OPENAI_API_KEY
+chatgpt = OpenAI(api_key=OPENAI_API_KEY)
 
 # Initialize Embed Messages
 async def send_embed_message(ctx, content, color):
@@ -325,12 +325,14 @@ async def search_reddit(ctx, query):
 
 @bot.command(name='question', description="Ask ChatGPT a question.")
 async def question(ctx, *, question):
-    response = openai.Completion.create(
-        engine="gpt-3.5-turbo",
-        prompt=f"{question}",
-        max_tokens=3000
+    response = chatgpt.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{
+            "role": f"user",
+            "content": f"{question}"
+            }]
     )
-    await send_embed_message(ctx, response.choices[0].text, discord.Color.red())
+    await send_embed_message(ctx, response.choices[0].message.content, discord.Color.red())
 
 @bot.command(name='fix_code', description="Let ChatGPT fix your code.")
 async def fix_code(ctx, *, code):
