@@ -23,7 +23,7 @@ from urllib.parse import urlparse, unquote
 import praw
 import string
 import secrets
-from openai import OpenAI
+import openai
 import random
 import binascii
 import logging
