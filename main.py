@@ -385,7 +385,7 @@ async def search_reddit(ctx: Interaction, query: str):
             embed.description = "Do you want to see more posts related to your query?"
 
             async def buttonMore_callback(button_interaction: Interaction):
-                await button_interaction.response.defer()
+                await button_interaction.response.edit_message(view=None)
                 nonlocal has_ran
                 has_ran = True
                 new_posts.extend([post for post in search_results if post not in displayed_posts])
@@ -394,7 +394,7 @@ async def search_reddit(ctx: Interaction, query: str):
                 await prompt_more()
 
             async def buttonStop_callback(button_interaction: Interaction):
-                await button_interaction.response.defer()
+                await button_interaction.response.edit_message(view=None)
 
             buttonMore.callback = buttonMore_callback
             buttonStop.callback = buttonStop_callback
