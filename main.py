@@ -361,14 +361,14 @@ async def search_reddit(ctx: Interaction, query: str):
                 embed.timestamp = created_time
 
                 if f'discord' not in post.url:
-                    await interaction.response.send_message(embed=embed, ephemeral=True)
+                    await ctx.response.send_message(embed=embed, ephemeral=True)
                     displayed_posts.append(post)
                     new_posts.remove(post)
                 else:
                     print(f'discord link in post {post}')
 
             if len(new_posts) <= 1:
-                await slash_embed_message(interaction, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
+                await slash_embed_message(ctx, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
                 return
 
         async def prompt_more():
@@ -378,7 +378,7 @@ async def search_reddit(ctx: Interaction, query: str):
             embed = discord.Embed(color=discord.Color.red())
             embed.description = "Do you want to see more posts related to your query?"
 
-            async def buttonMore_callback(button_interaction: discord.Interaction):
+            async def buttonMore_callback(button_interaction: Interaction):
                 await button_interaction.response.defer()
                 nonlocal has_ran
                 has_ran = True
@@ -387,7 +387,7 @@ async def search_reddit(ctx: Interaction, query: str):
                 await send_posts(random_posts)
                 await prompt_more()
 
-            async def buttonStop_callback(button_interaction: discord.Interaction):
+            async def buttonStop_callback(button_interaction: Interaction):
                 await button_interaction.response.defer()
 
             buttonMore.callback = buttonMore_callback
@@ -397,7 +397,7 @@ async def search_reddit(ctx: Interaction, query: str):
             view.add_item(buttonMore)
             view.add_item(buttonStop)
 
-            await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+            await ctx.response.send_message(embed=embed, view=view, ephemeral=True)
 
         if has_ran == False:
             await send_posts(random_posts)
