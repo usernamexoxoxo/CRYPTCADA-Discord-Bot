@@ -24,7 +24,6 @@ import praw
 import string
 import secrets
 import openai
-from openai import OpenAI
 import random
 import binascii
 import logging
@@ -56,7 +55,7 @@ reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
                      user_agent = REDDIT_USER_AGENT)
 
 # Initialize OpenAI GPT-3
-chatgpt = OpenAI(api_key=OPENAI_API_KEY)
+openai.api_key = OPENAI_API_KEY
 
 # Initialize Embed Messages
 async def send_embed_message(ctx, content, color):
@@ -326,41 +325,47 @@ async def search_reddit(ctx, query):
 
 @bot.command(name='question', description="Ask ChatGPT a question.")
 async def question(ctx, *, question):
-    response = chatgpt.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[{
-            "role": f"user",
-            "content": f"{question}"
-            }]
+            "role": "user",
+            "content": question
+        }]
     )
-    await send_embed_message(ctx, response.choices[0].message.content, discord.Color.red())
+    await send_embed_message(ctx, response.choices[0].message["content"], discord.Color.red())
 
 @bot.command(name='fix_code', description="Let ChatGPT fix your code.")
 async def fix_code(ctx, *, code):
-    response = openai.Completion.create(
-        engine="gpt-3.5-turbo",
-        prompt=f"how do I fix this code? {code}",
-        max_tokens=3000
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{
+            "role": "user",
+            "content": f"how do I fix this code? {code}"
+        }]
     )
-    await send_embed_message(ctx, response.choices[0].text, discord.Color.red())
+    await send_embed_message(ctx, response.choices[0].message["content"], discord.Color.red())
 
 @bot.command(name='lincom', description="Let ChatGPT explain a linux command to you.")
 async def lincom(ctx, *, command_name):
-    response = openai.Completion.create(
-        engine="gpt-3.5-turbo",
-        prompt=f"how does the '{command_name}' linux command function and what is its syntax usage",
-        max_tokens=3000
+    response = openai.ChatCompletion.createe(
+        model="gpt-3.5-turbo",
+        messages=[{
+            "role": "user",
+            "content": f"how does the '{command_name}' linux command function and what is its syntax usage"
+        }]
     )
-    await send_embed_message(ctx, response.choices[0].text, discord.Color.red())
+    await send_embed_message(ctx, response.choices[0].message["content"], discord.Color.red())
 
 @bot.command(name='joke', description="Make ChatGPT tell you a joke.")
 async def joke(ctx):
-    response = openai.Completion.create(
-        engine="gpt-3.5-turbo",
-        prompt="Tell me a new random joke.",
-        max_tokens=3000
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{
+            "role": "user",
+            "content": "Tell me a new random joke."
+        }]
     )
-    await send_embed_message(ctx, response.choices[0].text, discord.Color.red())
+    await send_embed_message(ctx, response.choices[0].message["content"], discord.Color.red())
 
 # Function to provide text translation options with embed
 async def provide_text_translation_options(ctx, text):
