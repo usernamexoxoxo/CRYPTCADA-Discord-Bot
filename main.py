@@ -477,8 +477,8 @@ async def help(ctx: Interaction):
     # Define a dictionary of commands and their explanations with formatting
     commands_info = {
         '**%meme**':  'Get a random meme from reddit.',
-        '**%search_reddit  < query >**':  'Search Reddit for posts based on a query.',
         '**%translate  < Text to translate >**':  'Translate between text, binary, hexadecimal and chill++.',
+        '**/search_reddit  < query >**':  'Search Reddit for posts based on a query.',
         '**/passwordgen  < password length >**':  'Generates a secure password and sends it privately through an ephemeral response.',
         '**/setup**':  'Set up the CRYPTCADA log channel. (Admin permissions required)',
         '**/ping**':  'Tells you the bots latency.',
