@@ -204,91 +204,6 @@ async def meme(ctx):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-@bot.tree.command(name='search_reddit', description="Search reddit based on a query.")
-async def search_reddit(interaction: discord.Interaction, query: str):
-    try:
-        print(f'%search_reddit command ran with query: {query}')
-
-        search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
-        displayed_posts = []
-        new_posts = []
-
-        new_posts.extend([post for post in search_results if post not in displayed_posts])
-        random_posts = random.sample(new_posts, 3)
-        has_ran = False
-
-        async def send_posts(random_posts):
-            for post in random_posts:
-                media_type = getattr(post.media, "type", None)
-                print(f'post found: ""{post}"" with media type: {media_type}')
-                created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
-                original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.shortlink})"
-                embed = discord.Embed(color=discord.Color.red())
-                embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
-                embed.description = f'{original_post_link} \n **{post.title.strip("*")}** \n '
-
-                if post.selftext:
-                    embed.description += f'*{post.selftext.strip("*")}*'
-                if media_type == "image":
-                    embed.set_image(url=post.url)
-                if media_type == "video":
-                    embed.set_image(url=post.url)
-                if f'youtube' in post.url or f'youtu.be' in post.url:
-                    embed.description += f'\n<{post.url}>\n'
-                    thumbnail_url = post.preview['images'][0]['source']['url']
-                    embed.set_image(url=thumbnail_url)
-                elif hasattr(post, 'preview') and 'images' in post.preview:
-                    thumbnail_url = post.preview['images'][0]['source']['url']
-                    embed.set_image(url=thumbnail_url)
-
-                embed.timestamp = created_time
-
-                if f'discord' not in post.url:
-                    await interaction.response.send_message(embed=embed, ephemeral=True)
-                    displayed_posts.append(post)
-                    new_posts.remove(post)
-                else:
-                    print(f'discord link in post {post}')
-
-            if len(new_posts) <= 1:
-                await slash_embed_message(interaction, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
-                return
-
-        async def prompt_more():
-            buttonMore = Button(label="More posts", style=discord.ButtonStyle.green)
-            buttonStop = Button(label="Stop searching", style=discord.ButtonStyle.red)
-
-            embed = discord.Embed(color=discord.Color.red())
-            embed.description = "Do you want to see more posts related to your query?"
-
-            async def buttonMore_callback(button_interaction: discord.Interaction):
-                await button_interaction.response.defer()
-                nonlocal has_ran
-                has_ran = True
-                new_posts.extend([post for post in search_results if post not in displayed_posts])
-                random_posts = random.sample(new_posts, 3)
-                await send_posts(random_posts)
-                await prompt_more()
-
-            async def buttonStop_callback(button_interaction: discord.Interaction):
-                await button_interaction.response.defer()
-
-            buttonMore.callback = buttonMore_callback
-            buttonStop.callback = buttonStop_callback
-
-            view = View()
-            view.add_item(buttonMore)
-            view.add_item(buttonStop)
-
-            await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
-
-        if has_ran == False:
-            await send_posts(random_posts)
-            await prompt_more()
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
 # Function to provide text translation options with embed
 async def provide_text_translation_options(ctx, text):
     # Create an embed with translation options
@@ -405,6 +320,91 @@ async def translate(ctx, *, input_text):
 async def ping(ctx: Interaction):
     latency = round(bot.latency * 1000)  # Calculate the bot's latency in milliseconds
     await slash_embed_message(ctx, f'Pong! Latency: {latency}ms', discord.Color.red())
+
+@bot.tree.command(name='search_reddit', description="Search reddit based on a query.")
+async def search_reddit(ctx: Interaction, query: str):
+    try:
+        print(f'%search_reddit command ran with query: {query}')
+
+        search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
+        displayed_posts = []
+        new_posts = []
+
+        new_posts.extend([post for post in search_results if post not in displayed_posts])
+        random_posts = random.sample(new_posts, 3)
+        has_ran = False
+
+        async def send_posts(random_posts):
+            for post in random_posts:
+                media_type = getattr(post.media, "type", None)
+                print(f'post found: ""{post}"" with media type: {media_type}')
+                created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
+                original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.shortlink})"
+                embed = discord.Embed(color=discord.Color.red())
+                embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
+                embed.description = f'{original_post_link} \n **{post.title.strip("*")}** \n '
+
+                if post.selftext:
+                    embed.description += f'*{post.selftext.strip("*")}*'
+                if media_type == "image":
+                    embed.set_image(url=post.url)
+                if media_type == "video":
+                    embed.set_image(url=post.url)
+                if f'youtube' in post.url or f'youtu.be' in post.url:
+                    embed.description += f'\n<{post.url}>\n'
+                    thumbnail_url = post.preview['images'][0]['source']['url']
+                    embed.set_image(url=thumbnail_url)
+                elif hasattr(post, 'preview') and 'images' in post.preview:
+                    thumbnail_url = post.preview['images'][0]['source']['url']
+                    embed.set_image(url=thumbnail_url)
+
+                embed.timestamp = created_time
+
+                if f'discord' not in post.url:
+                    await interaction.response.send_message(embed=embed, ephemeral=True)
+                    displayed_posts.append(post)
+                    new_posts.remove(post)
+                else:
+                    print(f'discord link in post {post}')
+
+            if len(new_posts) <= 1:
+                await slash_embed_message(interaction, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
+                return
+
+        async def prompt_more():
+            buttonMore = Button(label="More posts", style=discord.ButtonStyle.green)
+            buttonStop = Button(label="Stop searching", style=discord.ButtonStyle.red)
+
+            embed = discord.Embed(color=discord.Color.red())
+            embed.description = "Do you want to see more posts related to your query?"
+
+            async def buttonMore_callback(button_interaction: discord.Interaction):
+                await button_interaction.response.defer()
+                nonlocal has_ran
+                has_ran = True
+                new_posts.extend([post for post in search_results if post not in displayed_posts])
+                random_posts = random.sample(new_posts, 3)
+                await send_posts(random_posts)
+                await prompt_more()
+
+            async def buttonStop_callback(button_interaction: discord.Interaction):
+                await button_interaction.response.defer()
+
+            buttonMore.callback = buttonMore_callback
+            buttonStop.callback = buttonStop_callback
+
+            view = View()
+            view.add_item(buttonMore)
+            view.add_item(buttonStop)
+
+            await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+
+        if has_ran == False:
+            await send_posts(random_posts)
+            await prompt_more()
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 @bot.tree.command(name='passwordgen', description="Generates a secure password and sends it privately through ephemeral responses.")
 async def passwordgen(ctx: Interaction, length: int = 12):
