@@ -209,76 +209,49 @@ async def search_reddit(interaction: discord.Interaction, query: str):
     try:
         print(f'%search_reddit command ran with query: {query}')
 
-        # Fetch 50 posts based on the user's query
         search_results = reddit.subreddit("all").search(query, sort="new", limit=50)
-
-        # Initialize empty lists to store already seen posts and to store new Posts
-        # So that the send_posts function knows what posts not to send and what posts it has available to display
         displayed_posts = []
         new_posts = []
 
-        # Filter out posts that have already been displayed
         new_posts.extend([post for post in search_results if post not in displayed_posts])
-        # Load 3 posts from new_posts so the send_posts function can send them
         random_posts = random.sample(new_posts, 3)
-
-        # Set has_ran value so the function doesn't loop infinitely
         has_ran = False
 
         async def send_posts(random_posts):
             for post in random_posts:
-
-                # Check the media type of the posts
                 media_type = getattr(post.media, "type", None)
                 print(f'post found: ""{post}"" with media type: {media_type}')
-                # Convert the created_utc timestamp to a datetime object
                 created_time = datetime.datetime.utcfromtimestamp(post.created_utc)
-                # Add a link to the original post and mention the subreddit
                 original_post_link = f"[View on Reddit in r/{post.subreddit.display_name}]({post.shortlink})"
-                # set the discord embed
                 embed = discord.Embed(color=discord.Color.red())
-                # Add the author's name and profile image
                 embed.set_author(name=f'u/{post.author.name}', icon_url=post.author.icon_img)
-                # Add the post's title
                 embed.description = f'{original_post_link} \n **{post.title.strip("*")}** \n '
 
-                # If there is a description, add it to the embed
                 if post.selftext:
                     embed.description += f'*{post.selftext.strip("*")}*'
-                # If there is an image, add it to the embed
                 if media_type == "image":
                     embed.set_image(url=post.url)
-                # If there is a video, add it to the embed
                 if media_type == "video":
                     embed.set_image(url=post.url)
-                # If there is a youtube link in the post, add it to the embed
                 if f'youtube' in post.url or f'youtu.be' in post.url:
                     embed.description += f'\n<{post.url}>\n'
-                    # Assuming the first image in the preview is the thumbnail
                     thumbnail_url = post.preview['images'][0]['source']['url']
-                    # Set the image
                     embed.set_image(url=thumbnail_url)
                 elif hasattr(post, 'preview') and 'images' in post.preview:
-                    # Assuming the first image in the preview is the thumbnail
                     thumbnail_url = post.preview['images'][0]['source']['url']
-                    # Set the image
                     embed.set_image(url=thumbnail_url)
 
-                # Display the time when it was posted
                 embed.timestamp = created_time
 
                 if f'discord' not in post.url:
-                    # Send the post
                     await interaction.response.send_message(embed=embed, ephemeral=True)
-                    # Add the post to the set of displayed posts
-                    # So the bot knows not to display these posts anymore.
                     displayed_posts.append(post)
                     new_posts.remove(post)
                 else:
                     print(f'discord link in post {post}')
 
             if len(new_posts) <= 1:
-                await send_embed_message(interaction, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
+                await slash_embed_message(interaction, f'No more posts to display, please run the %search_reddit command again.', discord.Color.red())
                 return
 
         async def prompt_more():
@@ -288,8 +261,8 @@ async def search_reddit(interaction: discord.Interaction, query: str):
             embed = discord.Embed(color=discord.Color.red())
             embed.description = "Do you want to see more posts related to your query?"
 
-            async def buttonMore_callback(interaction: discord.Interaction):
-                await interaction.response.defer()
+            async def buttonMore_callback(button_interaction: discord.Interaction):
+                await button_interaction.response.defer()
                 nonlocal has_ran
                 has_ran = True
                 new_posts.extend([post for post in search_results if post not in displayed_posts])
@@ -297,8 +270,8 @@ async def search_reddit(interaction: discord.Interaction, query: str):
                 await send_posts(random_posts)
                 await prompt_more()
 
-            async def buttonStop_callback(interaction: discord.Interaction):
-                await interaction.response.defer()
+            async def buttonStop_callback(button_interaction: discord.Interaction):
+                await button_interaction.response.defer()
 
             buttonMore.callback = buttonMore_callback
             buttonStop.callback = buttonStop_callback
@@ -315,7 +288,7 @@ async def search_reddit(interaction: discord.Interaction, query: str):
 
     except Exception as e:
         print(f"An error occurred: {e}")
-        
+
 # Function to provide text translation options with embed
 async def provide_text_translation_options(ctx, text):
     # Create an embed with translation options
