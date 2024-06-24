@@ -23,7 +23,6 @@ from urllib.parse import urlparse, unquote
 import praw
 import string
 import secrets
-import openai
 import random
 import binascii
 import logging
@@ -32,7 +31,7 @@ import threading
 import time
 from wordfilter import wordfilter
 from cc_utils import on_mal_msg, sanitize_urls
-from config import DISCORD_BOT_TOKEN, REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT, OPENAI_API_KEY, VIRUSTOTAL_API_KEY
+from config import DISCORD_BOT_TOKEN, REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USER_AGENT, VIRUSTOTAL_API_KEY
 
 # Configure the logger
 logging.basicConfig(filename='bot_debug.log', level=logging.DEBUG)
@@ -53,9 +52,6 @@ bot = commands.Bot(command_prefix='%', intents=intents)
 reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
                      client_secret = REDDIT_CLIENT_SECRET,
                      user_agent = REDDIT_USER_AGENT)
-
-# Initialize OpenAI GPT-3
-openai.api_key = OPENAI_API_KEY
 
 # Initialize Embed Messages
 async def send_embed_message(ctx, content, color):
@@ -323,50 +319,6 @@ async def search_reddit(ctx, query):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-@bot.command(name='question', description="Ask ChatGPT a question.")
-async def question(ctx, *, question):
-    response = openai.ChatCompletion.create(
-        model="davinci-002",
-        messages=[{
-            "role": "user",
-            "content": question
-        }]
-    )
-    await send_embed_message(ctx, response.choices[0].message["content"], discord.Color.red())
-
-@bot.command(name='fix_code', description="Let ChatGPT fix your code.")
-async def fix_code(ctx, *, code):
-    response = openai.ChatCompletion.create(
-        model="davinci-002",
-        messages=[{
-            "role": "user",
-            "content": f"how do I fix this code? {code}"
-        }]
-    )
-    await send_embed_message(ctx, response.choices[0].message["content"], discord.Color.red())
-
-@bot.command(name='lincom', description="Let ChatGPT explain a linux command to you.")
-async def lincom(ctx, *, command_name):
-    response = openai.ChatCompletion.create(
-        model="davinci-002",
-        messages=[{
-            "role": "user",
-            "content": f"how does the '{command_name}' linux command function and what is its syntax usage"
-        }]
-    )
-    await send_embed_message(ctx, response.choices[0].message["content"], discord.Color.red())
-
-@bot.command(name='joke', description="Make ChatGPT tell you a joke.")
-async def joke(ctx):
-    response = openai.ChatCompletion.create(
-        model="davinci-002",
-        messages=[{
-            "role": "user",
-            "content": "Tell me a new random joke."
-        }]
-    )
-    await send_embed_message(ctx, response.choices[0].message["content"], discord.Color.red())
-
 # Function to provide text translation options with embed
 async def provide_text_translation_options(ctx, text):
     # Create an embed with translation options
@@ -548,13 +500,9 @@ async def setup(ctx: Interaction):
 async def help(ctx: Interaction):
     # Define a dictionary of commands and their explanations with formatting
     commands_info = {
-        '**%question  < question >**':  'Ask ChatGPT a question.',
-        '**%fix_code  < code >**':  'Let ChatGPT fix your code for you.',
-        '**%joke**':  'Get a random joke from ChatGPT.',
         '**%meme**':  'Get a random meme from reddit.',
         '**%search_reddit  < query >**':  'Search Reddit for posts based on a query.',
         '**%translate  < Text to translate >**':  'Translate between text, binary, hexadecimal and chill++.',
-        '**%lincom  < command name >**':  'Get a command explanation from ChatGPT.',
         '**/passwordgen  < password length >**':  'Generates a secure password and sends it privately through an ephemeral response.',
         '**/setup**':  'Set up the CRYPTCADA log channel. (Admin permissions required)',
         '**/ping**':  'Tells you the bots latency.',
