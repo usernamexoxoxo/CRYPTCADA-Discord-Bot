@@ -55,7 +55,7 @@ reddit = praw.Reddit(client_id = REDDIT_CLIENT_ID,
                      user_agent = REDDIT_USER_AGENT)
 
 # Initialize OpenAI GPT-3
-chatgpt = OpenAI(api_key=OPENAI_API_KEY)
+chatgpt = openai(api_key=OPENAI_API_KEY)
 
 # Initialize Embed Messages
 async def send_embed_message(ctx, content, color):
